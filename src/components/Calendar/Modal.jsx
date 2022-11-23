@@ -32,7 +32,10 @@ const Form = (props) => {
         props.onSubmit({
             id: Math.floor(Math.random() * 10000),
             title: input.title,
-            detail: input.detail
+            detail: input.detail,
+            date: props.type === "update" ? props.update.date : 0,
+            month: props.type === "update" ? props.update.month : 0,
+            year: props.type === "update" ? props.update.year : 0
         })
 
         if (input.title.trim().length !== 0) {
@@ -51,7 +54,7 @@ const Form = (props) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}>
-            <div className={"input-box" + (error ? "error" : "")}>
+            <div className={"input-box " + (error ? "error" : "")}>
                 <label>Title:</label>
                 <input type="text" value={input.title} onChange={HandleChangeTitle} />
             </div>
@@ -78,7 +81,7 @@ export const Modal = (props) => {
     const ModalContent = (modalProps) => {
         if (modalProps.type === "input") {
             return (
-                <Form update={props.item} type="input" onSubmit={AddEvent} />
+                <Form type="input" onSubmit={AddEvent} />
             )
         }
         else if (modalProps.type === "view") {
@@ -109,7 +112,6 @@ export const Modal = (props) => {
                     exit={{ opacity: 0 }}>
                     <div className="icon">
                         <ion-icon name="checkmark-circle-outline"></ion-icon>
-                        <ion-icon name="checkmark-circle"></ion-icon>
                     </div>
                     <h1>Completed</h1>
                 </motion.div>
@@ -121,11 +123,7 @@ export const Modal = (props) => {
         props.CloseModal()
     }
 
-    return (
-        // Event input modal --> Completed modal
-        // Event view modal --> Update --> Update modal --> Completed modal
-        //                  --> Remove --> Completed modal
-        
+    return (        
         <div className={"modal" + (props.isActiveModal ? " active" : "")}>
             <div className="modal-background" onClick={CloseModal}></div>
             <div className="modal-content">

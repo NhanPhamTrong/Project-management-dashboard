@@ -31,6 +31,7 @@
         
         ul {
             min-height: 2rem;
+            border: $on-surface solid 0.1rem;
             display: grid;
             grid-row-gap: 0.5rem;
             
@@ -173,7 +174,18 @@
                         width: 100%;
                         margin-bottom: 1rem;
                         padding: 0.5rem 1rem;
+                        border: transparent solid 0.1rem;
                         border-radius: 0.25rem;
+                    }
+                }
+
+                .input-box.error {
+                    label {
+                        color: $error;
+                    }
+
+                    input {
+                        border: $error solid 0.1rem;
                     }
                 }
 
@@ -187,7 +199,7 @@
             }
 
             p {
-                margin: 1rem 0;
+                margin: 1.5rem 0;
             }
 
             .btn {
@@ -203,6 +215,19 @@
 
                 button.remove {
                     background: $error;
+                }
+            }
+
+            .icon {
+                width: 100%;
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+
+                ion-icon {
+                    height: 6rem;
+                    width: 6rem;
+                    color: $completed;
                 }
             }
         }
@@ -264,6 +289,12 @@
         .modal {
             .modal-content {
                 min-width: 60vw;
+
+                .btn {
+                    button {
+                        padding: 1rem 1.5rem;
+                    }
+                }
             }
         }
     }

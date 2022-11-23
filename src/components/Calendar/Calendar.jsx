@@ -4,23 +4,20 @@ import { Modal } from "./Modal"
 
 const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-const CalendarSection = () => {
+const CalendarSection = (props) => {
     const [current, setCurrent] = useState({
         month: new Date().getMonth(),
         year: new Date().getFullYear()
     })
 
-    const [dayOfMonth, setDayOfMonth] = useState([])
+    const [dateOfMonth, setDateOfMonth] = useState([])
 
     useEffect(() => {
-        setDayOfMonth(() => {
+        setDateOfMonth(() => {
             let newList = []
-
             let firstDayOfMonth = new Date(current.year, current.month, 1).getDay()
             let lastDateOfLastMonth = new Date(current.year, current.month, 0).getDate()
-
             let lastDateOfMonth = new Date(current.year, current.month + 1, 0).getDate()
-
             let lastDayOfMonth = new Date(current.year, current.month, lastDateOfMonth).getDay()
 
             const CheckIsToday = (thisDate) => {
@@ -33,7 +30,9 @@ const CalendarSection = () => {
 
             for (let i = firstDayOfMonth; i > 0; i--) {
                 newList.push({
-                    day: lastDateOfLastMonth - i + 1,
+                    date: lastDateOfLastMonth - i + 1,
+                    month: current.month - 1,
+                    year: current.month === 1 ? current.year - 1 : current.year,
                     isToday: CheckIsToday(lastDateOfLastMonth - i + 1),
                     isActive: false
                 })
@@ -41,7 +40,9 @@ const CalendarSection = () => {
 
             for (let i = 1; i <= lastDateOfMonth; i++) {
                 newList.push({
-                    day: i,
+                    date: i,
+                    month: current.month,
+                    year: current.year,
                     isToday: CheckIsToday(i),
                     isActive: true
                 })
@@ -49,7 +50,9 @@ const CalendarSection = () => {
 
             for (let i = lastDayOfMonth; i < 6; i++) {
                 newList.push({
-                    day: i - lastDayOfMonth + 1,
+                    date: i - lastDayOfMonth + 1,
+                    month: current.month + 1,
+                    year: current.month === 11 ? current.year + 1 : current.year,
                     isToday: CheckIsToday(i - lastDayOfMonth + 1),
                     isActive: false
                 })
@@ -77,10 +80,13 @@ const CalendarSection = () => {
         e.preventDefault()
     }
 
-    const Drop = (e) => {
+    const Drag = (e) => {
+        e.dataTransfer.setData("text", e.currentTarget.id)
+    }
+
+    const Drop = (e, date) => {
         e.preventDefault()
-        const data = e.dataTransfer.getData("text")
-        e.currentTarget.appendChild(document.getElementById(data))
+        props.SetNewDate(date, parseInt(e.dataTransfer.getData("text")))
     }
 
     return (
@@ -107,11 +113,19 @@ const CalendarSection = () => {
                     <li>Sat</li>
                 </ul>
                 <ul className="date">
-                    {dayOfMonth.map((item, index) => {
+                    {dateOfMonth.map((date, index) => {
                         return (
-                            <li key={index} className={item.isToday ? "today" : "" + (item.isActive ? "" : " inactive")}>
-                                <div>{item.day}</div>
-                                <ul onDrop={Drop} onDragOver={AllowDrop}></ul>
+                            <li key={index} className={date.isToday ? "today" : "" + (date.isActive ? "" : " inactive")}>
+                                <div>{date.date}</div>
+                                <ul onDrop={(e) => Drop(e, date)} onDragOver={AllowDrop}>
+                                    {props.eventList.map((item, index) => (item.year === date.year && item.month === date.month && item.date === date.date) && (
+                                        <li key={index}
+                                            id={item.id}
+                                            draggable="true"
+                                            onDragStart={Drag}
+                                            onClick={() => props.ClickEvent(item)}>{item.title}</li>
+                                    ))}
+                                </ul>
                             </li>
                         )
                     })}
@@ -130,7 +144,10 @@ export const Calendar = () => {
     const [modal, setModal] = useState({
         id: null,
         title: "",
-        detail: ""
+        detail: "",
+        date: 0,
+        month: 0,
+        year: 0
     })
 
     const AllowDrop = (e) => {
@@ -143,8 +160,25 @@ export const Calendar = () => {
 
     const Drop = (e) => {
         e.preventDefault()
-        const data = e.dataTransfer.getData("text")
-        e.currentTarget.appendChild(document.getElementById(data))
+        setEventList(eventList.map((item) => item.id === parseInt(e.dataTransfer.getData("text")) ? {
+            id: item.id,
+            title: item.title,
+            detail: item.detail,
+            date: 0,
+            month: 0,
+            year: 0
+        } : item))
+    }
+
+    const SetNewDate = (date, data) => {
+        setEventList(eventList.map((item) => item.id === data ? {
+            id: item.id,
+            title: item.title,
+            detail: item.detail,
+            date: date.date,
+            month: date.month,
+            year: date.year
+        } : item))
     }
 
     const OpenAddEvent = () => {
@@ -165,12 +199,15 @@ export const Calendar = () => {
         setModal({
             id: item.id,
             title: item.title,
-            detail: item.detail
+            detail: item.detail,
+            date: item.date,
+            month: item.month,
+            year: item.year
         })
     }
 
     const ClickRemove = (id) => {
-        document.getElementById(id).closest("ul").removeChild(document.getElementById(id))
+        setEventList(eventList.filter((item) => item.id !== id))
         setType("completed")
     }
 
@@ -188,7 +225,10 @@ export const Calendar = () => {
         setModal({
             id: null,
             title: "",
-            detail: ""
+            detail: "",
+            date: 0,
+            month: 0,
+            year: 0
         })
         setType("completed")
     }
@@ -208,7 +248,7 @@ export const Calendar = () => {
                     Add event
                 </button>
                 <ul onDrop={Drop} onDragOver={AllowDrop}>
-                    {eventList.map((item, index) => (
+                    {eventList.map((item, index) => (item.year === 0 && item.month === 0 && item.date === 0) && (
                         <li key={index}
                             id={item.id}
                             draggable="true"
@@ -218,7 +258,7 @@ export const Calendar = () => {
                 </ul>
             </div>
 
-            <CalendarSection />
+            <CalendarSection SetNewDate={SetNewDate} eventList={eventList} ClickEvent={ClickEvent} />
 
             <Modal type={type}
                 isActiveModal={isActiveModal}

@@ -2,7 +2,7 @@
 
 #dashboard {
     width: 100%;
-    padding: 7rem 0.5rem;
+    padding: 7rem 0.5rem 0.5rem 0.5rem;
     display: grid;
     grid-gap: 1rem;
 
@@ -17,7 +17,7 @@
         }
     }
 
-    .budget-section {
+    .project-budget-section {
         .chart-and-stat {
             .chart {
                 width: 100%;
@@ -154,13 +154,88 @@
             }
         }
     }
+
+    .overdue-tasks-section, .upcoming-deadlines-section {
+        table {
+            width: 100%;
+            background: $on-surface;
+            text-align: center;
+
+            thead {
+                tr {
+                    th {
+                        padding: 0.5rem 0;
+                        background: rgb(210, 210, 210);
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        padding: 0.5rem 0;
+                        background: $surface;
+                    }
+
+                    td.late {
+                        color: $error;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
+
+    .workload-section {
+        .chart {
+            min-height: 10rem;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 4rem 1fr;
+
+            .name {
+                padding: 0.5rem 0;
+                display: grid;
+                grid-row-gap: 0.5rem;
+
+                p {
+                    height: 1.5rem;
+                    width: 4rem;
+                    cursor: default;
+                    line-height: 1.5rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+
+            .bar {
+                height: 100%;
+                padding: 0.5rem 0;
+                border-left: $on-surface solid 0.1rem;
+                display: grid;
+                grid-row-gap: 0.5rem;
+
+                div {
+                    height: 1.5rem;
+                    background-color: $primary;
+                    color: $on-primary;
+
+                    p {
+                        padding-left: 0.5rem;
+                        line-height: 1.5rem;
+                    }
+                }
+            }
+        }
+    }
 }
 
 @media only screen and (min-width: 600px) {
     #dashboard {
-        padding: 7rem 1rem;
+        padding: 8rem 1rem 1rem 1rem;
         
-        .budget-section {
+        .project-budget-section {
             .chart-and-stat {
                 display: flex;
                 justify-content: space-between;
@@ -189,11 +264,18 @@
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr 1fr;
 
-        .budget-section {
+        .project-budget-section {
             .chart-and-stat {
                 .chart {
                     width: 55%;
                 }
+            }
+        }
+
+        .workload-section {
+            .chart {
+                height: 16rem;
+                overflow: auto;
             }
         }
     }
@@ -201,10 +283,29 @@
 
 @media only screen and (min-width: 1200px) {
     #dashboard {
-        .budget-section {
+        .project-budget-section {
             .chart-and-stat {
                 .chart {
                     width: 65%;
+                }
+            }
+        }
+
+        .workload-section {
+            .chart {
+                .bar {
+                    div {
+                        p {
+                            opacity: 0;
+                            transition: 0.2s;
+                        }
+                    }
+
+                    div:hover {
+                        p {
+                            opacity: 1;
+                        }
+                    }
                 }
             }
         }

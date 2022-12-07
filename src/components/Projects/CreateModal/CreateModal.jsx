@@ -24,6 +24,12 @@ const CreateModalForm = (props) => {
         end: ""
     })
 
+    const [isMissing, setIsMissing] = useState({
+        start: false,
+        end: false,
+        inappropriate: false
+    })
+
     const HandleChange = (e) => {
         let value = e.target.value
 
@@ -43,52 +49,72 @@ const CreateModalForm = (props) => {
     const HandleSubmit = (e) => {
         e.preventDefault()
 
-        props.onSubmit({
-            id: Math.floor(Math.random() * 1000),
-            createdTime: new Date(),
-            isOpened: true,
-            isActive: false,
-            project: {
-                name: input.name,
+        const start = new Date(input.start.month + "-" + input.start.date + "-" + input.start.year)
+        const end = new Date(input.end.month + "-" + input.end.date + "-" + input.end.year)
+
+        if (isNaN(start)) {
+            setIsMissing({...isMissing, start: true})
+        }
+        else if (isNaN(end)) {
+            setIsMissing({...isMissing, start: false, end: true})
+        }
+        else if (end - start <= 0) {
+            setIsMissing({start: false, end: false, inappropriate: true})
+        }
+        else {
+            props.onSubmit({
+                id: Math.floor(Math.random() * 1000),
+                createdTime: new Date(),
+                isOpened: true,
+                isActive: false,
+                project: {
+                    name: input.name,
+                    start: {
+                        date: input.start.date,
+                        month: input.start.month,
+                        year: input.start.year
+                    },
+                    end: {
+                        date: input.end.date,
+                        month: input.end.month,
+                        year: input.end.year
+                    }
+                },
+                member: "",
+                budget: {
+                    total: input.total,
+                    planned: input.planned
+                }
+            })
+    
+            setInput({
+                name: "",
                 start: {
-                    date: input.start.date,
-                    month: input.start.month,
-                    year: input.start.year
+                    date: "",
+                    month: "",
+                    year: ""
                 },
                 end: {
-                    date: input.end.date,
-                    month: input.end.month,
-                    year: input.end.year
-                }
-            },
-            member: "",
-            budget: {
-                total: input.total,
-                planned: input.planned
-            }
-        })
+                    date: "",
+                    month: "",
+                    year: ""
+                },
+                member: "",
+                total: "",
+                planned: ""
+            })
+    
+            setDateInput({
+                start: "",
+                end: ""
+            })
 
-        setInput({
-            name: "",
-            start: {
-                date: "",
-                month: "",
-                year: ""
-            },
-            end: {
-                date: "",
-                month: "",
-                year: ""
-            },
-            member: "",
-            total: "",
-            planned: ""
-        })
-
-        setDateInput({
-            start: "",
-            end: ""
-        })
+            setIsMissing({
+                start: false,
+                end: false,
+                inappropriate: false
+            })
+        }
     }
 
     return (
@@ -108,20 +134,26 @@ const CreateModalForm = (props) => {
                 <div className="w-100">
                     <input
                         id="project-start"
+                        className={isMissing.start ? "error" : ""}
                         type="date"
                         value={dateInput.start}
                         name="start"
                         onChange={HandleChange} />
                     <label htmlFor="project-start">Start</label>
+                    <p className={isMissing.start ? "error" : ""}>Missing start day</p>
                 </div>
                 <div className="w-100">
                     <input
                         id="project-end"
+                        className={(isMissing.end || isMissing.inappropriate) ? "error" : ""}
                         type="date"
                         value={dateInput.end}
                         name="end"
                         onChange={HandleChange} />
                     <label htmlFor="project-end">End</label>
+                    <p className={(isMissing.end || isMissing.inappropriate) ? "error" : ""}>
+                        {isMissing.end ? "Missing end day" : "Inappropriate end day (must be after start day)"}
+                    </p>
                 </div>
             </section>
             <section>

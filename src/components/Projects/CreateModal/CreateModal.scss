@@ -79,7 +79,8 @@
                         font-size: 0.75rem;
                         font-weight: 700;
                         letter-spacing: 1px;
-                        transform: translate(0.5rem, -2.125rem);
+                        left: 1rem;
+                        top: 0;
                     }
 
                     input:focus::placeholder,
@@ -90,6 +91,31 @@
                     input::-webkit-outer-spin-button,
                     input::-webkit-inner-spin-button {
                         display: none;
+                    }
+
+                    input.error {
+                        border: $error solid 0.05rem;
+                    }
+
+                    input.error:focus ~ label,
+                    input.error:valid ~ label {
+                        color: $error;
+                    }
+
+                    p {
+                        height: 0;
+                        margin: 0.25rem 0 0 1rem;
+                        color: $error;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+
+                    p.error {
+                        height: auto;
+                        opacity: 1;
+                        pointer-events: all;
                     }
                 }
     

@@ -61,22 +61,7 @@ export const Projects = (props) => {
     })
 
     const AddProject = (item) => {
-        const start = new Date(item.project.start.month + "-" + item.project.start.date + "-" + item.project.start.year)
-        const end = new Date(item.project.end.month + "-" + item.project.end.date + "-" + item.project.end.year)
-
-        if (Math.round(Math.abs(end - start) / (1000 * 3600 * 24)) <= 0) {
-            
-        }
-        else if (isNaN(start)) {
-            
-        }
-        else if (isNaN(end)) {
-            
-        }
-        else {
-            projectList.push(item)
-        }
-
+        projectList.push(item)
         setProjectList((prevValue) => [...prevValue])
     }
 

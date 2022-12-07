@@ -38,11 +38,11 @@ export const Navbar = (props) => {
                         </button>
                     </li>
                     <li>
-                        <button type="button" name="analytics" onClick={OpenSection}>
+                        <button type="button" name="projects" onClick={OpenSection}>
                             <span>
                                 <ion-icon name="analytics-outline"></ion-icon>
                             </span>
-                            <p>Analytics</p>
+                            <p>Projects</p>
                         </button>
                     </li>
                     <li>

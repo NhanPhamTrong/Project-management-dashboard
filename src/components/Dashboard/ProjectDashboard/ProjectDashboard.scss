@@ -1,0 +1,340 @@
+@import "../../../assets/global-styles/global-styles";
+
+#dashboard {
+    .project-dashboard {
+        display: grid;
+        grid-gap: 1rem;
+
+        section {
+            padding: 1rem;
+            background: $surface;
+            border-radius: 0.5rem;
+            color: $on-surface;
+    
+            h1 {
+                margin-bottom: 1.5rem;
+            }
+        }
+    
+        .project-budget-section {
+            .chart-and-stat {
+                .chart {
+                    width: 100%;
+                    position: relative;
+    
+                    .chart-background {
+                        height: 10rem;
+                        width: 85%;
+                        border-bottom: $on-surface solid 0.1rem;
+                        border-left: $on-surface solid 0.1rem;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                    }
+    
+                    .chart-content {
+                        height: 10rem;
+                        margin-bottom: 1.5rem;
+                        position: relative;
+    
+                        .vertical-value {
+                            height: 100%;
+                            width: 12%;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+    
+                            p {
+                                position: absolute;
+                                right: 0;
+                                top: 0;
+                                transform: translateY(-50%);
+                            }
+    
+                            p:nth-child(2) {
+                                top: calc(100% / 3);
+                            }
+    
+                            p:nth-child(3) {
+                                top: calc(100% * 2 / 3);
+                            }
+                            
+                            p:nth-child(4) {
+                                top: 100%;
+                            }
+                        }
+    
+                        .bar {
+                            height: 10rem;
+                            width: 85%;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+    
+                            div {
+                                height: var(--height);
+                                width: 15%;
+                                animation: verticalBar 0.8s;
+                                background: rgb(30, 30, 30);
+                                position: absolute;
+                                left: 25%;
+                                bottom: 0;
+                                transform: translateX(-50%);
+                            }
+    
+                            div:nth-child(2) {
+                                background: $primary;
+                                left: 50%;
+                            }
+    
+                            div:nth-child(3) {
+                                background: rgb(160, 160, 160);
+                                left: 75%;
+                            }
+                        }
+                    }
+    
+                    .note {
+                        .note-item {
+                            display: flex;
+                            align-items: center;
+    
+                            div {
+                                height: 1rem;
+                                width: 1rem;
+                                margin-right: 0.25rem;
+                                background: rgb(30, 30, 30);
+                            }
+    
+                            p {
+                                line-height: 1.5rem;
+                            }
+                        }
+    
+                        .note-item:nth-child(3) {
+                            div {
+                                background: $primary;
+                            }
+                        }
+    
+                        .note-item:nth-child(5) {
+                            div {
+                                background: rgb(160, 160, 160);
+                            }
+                        }
+                    }
+                }
+    
+                .stat {
+                    margin-top: 1.5rem;
+    
+                    p {
+                        display: flex;
+                        justify-content: space-between;
+                        line-height: 2rem;
+    
+                        span {
+                            width: max-content;
+                            margin-left: 1rem;
+                            font-size: 1.25rem;
+                            font-weight: 700;
+                        }
+                    }
+    
+                    p.over {
+                        span {
+                            color: $error;
+                        }
+                    }
+                    
+                    p.under {
+                        span {
+                            color: $completed;
+                        }
+                    }
+                }
+            }
+        }
+    
+        .overdue-tasks-section, .upcoming-deadlines-section {
+            table {
+                width: 100%;
+                background: $on-surface;
+                text-align: center;
+    
+                thead {
+                    tr {
+                        th {
+                            padding: 0.5rem 0;
+                            background: rgb(210, 210, 210);
+                        }
+                    }
+                }
+    
+                tbody {
+                    tr {
+                        td {
+                            padding: 0.5rem 0;
+                            background: $surface;
+    
+                            div {
+                                height: 1rem;
+                                width: 100%;
+                                background: $background;
+                                border-radius: 10rem;
+                                position: relative;
+                            }
+    
+                            div:before {
+                                content: "";
+                                height: 100%;
+                                width: var(--width);
+                                animation: horizontalBar 0.8s;
+                                background: $primary;
+                                border-radius: 10rem;
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                            }
+                        }
+    
+                        td.late {
+                            color: $error;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    
+        .upcoming-deadlines-section {
+            table {
+                tbody {
+                    tr {
+                        td:nth-child(4) {
+                            padding: 0.5rem 0.25rem;
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                }
+            }
+        }
+    
+        .workload-section {
+            .chart {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 4rem 1fr;
+    
+                .name {
+                    padding-top: 0.5rem;
+                    
+                    p {
+                        height: 1.5rem;
+                        width: 4rem;
+                        margin-bottom: 0.5rem;
+                        cursor: default;
+                        line-height: 1.5rem;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+    
+                .bar {
+                    padding-top: 0.5rem;
+                    border-left: $on-surface solid 0.1rem;
+    
+                    div {
+                        height: 1.5rem;
+                        width: var(--width);
+                        margin-bottom: 0.5rem;
+                        animation: horizontalBar 0.8s;
+                        background-color: $primary;
+                        border-radius: 0 10rem 10rem 0;
+                        color: $on-primary;
+    
+                        p {
+                            padding-left: 0.5rem;
+                            animation: fadeIn 0.8s;
+                            line-height: 1.5rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    #dashboard {        
+        .project-dashboard {
+            .project-budget-section {
+                .chart-and-stat {
+                    display: flex;
+                    justify-content: space-between;
+    
+                    .chart {
+                        width: 65%;
+                    }
+    
+                    .stat {
+                        margin-top: 2rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    #dashboard {
+        .project-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+
+            .project-budget-section {
+                .chart-and-stat {
+                    .chart {
+                        width: 55%;
+                    }
+                }
+            }
+    
+            .workload-section {
+                .chart {
+                    height: 16rem;
+                    overflow: auto;
+                }
+            }
+    
+            .upcoming-deadlines-section {
+                table {
+                    tbody {
+                        tr {
+                            td:nth-child(4) {
+                                padding: 0.5rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    #dashboard {
+        .project-dashboard {
+            .project-budget-section {
+                .chart-and-stat {
+                    .chart {
+                        width: 65%;
+                    }
+                }
+            }
+        }
+    }
+}

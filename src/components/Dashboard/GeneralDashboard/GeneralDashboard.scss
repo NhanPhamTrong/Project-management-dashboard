@@ -1,0 +1,275 @@
+@import "../../../assets/global-styles/global-styles";
+
+#dashboard {
+    .general-dashboard {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .general-heading {
+            background: $primary;
+            color: $on-primary;
+            display: grid;
+            grid-template-rows: 7rem 12rem 9rem 6.5rem;
+
+            h1 {
+                padding: 0 0.5rem;
+                border: $on-surface solid 0.05rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+            }
+        }
+
+        .carousel {
+            .general-content {
+                width: 14rem;
+                position: relative;
+    
+                .project, .progress, .budget, .overdue {
+                    padding: 0.5rem;
+                    background: $surface;
+                    border: $on-surface solid 0.05rem;
+                }
+    
+                .project {
+                    height: 7rem;
+                    padding: 0;
+                    padding-bottom: 0.5rem;
+                    display: grid;
+                    grid-template-columns: 3rem 1fr 3rem;
+                    grid-row-gap: 0.5rem;
+    
+                    button {
+                        height: 3rem;
+                        width: 3rem;
+                        background: $primary;
+                        border-bottom: $on-surface solid 0.05rem;
+                        color: $on-primary;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+    
+                    .name {
+                        width: 100%;
+                        padding: 0.5rem 0;
+                        background: $primary;
+                        border-left: $on-surface solid 0.05rem;
+                        border-right: $on-surface solid 0.05rem;
+                        color: $on-primary;
+                    }
+    
+                    .start, .end {
+                        grid-column: 1/4;
+                        padding: 0 0.5rem;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                }
+    
+                .progress {
+                    height: 12rem;
+                    display: flex;
+                    justify-content: center;
+                    position: relative;
+    
+                    svg {
+                        height: 11rem;
+                        width: 11rem;
+                        background: $background;
+                        border-radius: 100rem;
+                        position: relative;
+                        transform: rotate(-90deg);
+                        
+                        circle {
+                            height: 100%;
+                            width: 100%;
+                            fill: transparent;
+                            stroke: $primary;
+                            stroke-width: 16;
+                            transform: translate(0.5rem, 0.5rem);
+                        }
+                            
+                        circle:nth-child(2) {
+                            animation: generalDashboardWorkload 0.8s;
+                            stroke-dasharray: 502;
+                            stroke-dashoffset: var(--dashOffset);
+                            stroke: $secondary;
+                        }
+                    }
+    
+                    h1 {
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+                }
+    
+                .budget {
+                    height: 9rem;
+                    display: grid;
+    
+                    .chart, .bar-title {
+                        display: flex;
+                        justify-content: space-around;
+                    }
+    
+                    .chart {
+                        div {
+                            height: 6rem;
+                            width: 4rem;
+                            position: relative;
+    
+                            p {
+                                width: 100%;
+                                line-height: 1.25rem;
+                                position: absolute;
+                                bottom: calc(var(--height) - 1.25rem);
+                                text-align: center;
+                            }
+                        }
+    
+                        div:before {
+                            content: "";
+                            height: calc(var(--height) - 1.25rem);
+                            width: 100%;
+                            animation: verticalBarWithNumber 0.8s;
+                            background: $primary;
+                            position: absolute;
+                            bottom: 0;
+                        }
+                    }
+    
+                    .bar-title {
+                        p {
+                            width: 4rem;
+                            margin-top: 0.5rem;
+                            text-align: center;
+                        }
+                    }
+                }
+    
+                .overdue {
+                    display: flex;
+                    height: 6.5rem;
+    
+                    .bar-title {
+                        margin-right: 0.5rem;
+                        padding: 0.25rem 0;
+                        display: grid;
+                        grid-row-gap: 0.5rem;
+    
+                        p {
+                            width: 4rem;
+                            text-align: right;
+                        }
+                    }
+    
+                    .chart {
+                        width: 100%;
+                        padding: 0.25rem 0;
+                        border-left: $on-surface solid 0.1rem;
+                        display: grid;
+                        grid-row-gap: 0.5rem;
+    
+                        div {
+                            height: 1.25rem;
+                            position: relative;
+    
+                            p {
+                                width: 1rem;
+                                line-height: 1.25rem;
+                                position: absolute;
+                                left: calc(var(--width) - 1rem);
+                                text-align: center;
+                            }
+                        }
+    
+                        div:before {
+                            content: "";
+                            height: 100%;
+                            width: calc(var(--width) - 1rem);
+                            animation: horizontalBarWithNumber 0.8s;
+                            background: $primary;
+                            position: absolute;
+                            left: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    #dashboard {
+        .general-dashboard {
+            .general-heading {
+                grid-template-rows: 8rem 12rem 9rem 6.5rem;
+            }
+
+            .carousel {
+                .general-content {
+                    width: 20rem;
+    
+                    .project {
+                        height: 8rem;
+                        grid-template-columns: 4rem 1fr 4rem;
+    
+                        button {
+                            height: 4rem;
+                            width: 4rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    #dashboard {
+        .general-dashboard {
+            .carousel {
+                overflow: hidden;
+
+                ul {
+                    max-width: 40rem;
+                    display: flex;
+    
+                    li {
+                        .general-content {
+                            .project {
+                                grid-template-columns: 1fr;
+
+                                button {
+                                    border-left: none;
+                                    border-right: none;
+                                }
+    
+                                button:nth-child(1), button:nth-child(3) {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    #dashboard {
+        .general-dashboard {
+            .carousel {
+                ul {
+                    max-width: 60rem;
+                }
+            }
+        }
+    }
+}

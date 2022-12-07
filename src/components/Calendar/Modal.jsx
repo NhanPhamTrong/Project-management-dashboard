@@ -12,18 +12,8 @@ const Form = (props) => {
 
     const [error, setError] = useState(false)
 
-    const HandleChangeTitle = (e) => {
-        setInput((prevValue) => ({
-            title: e.target.value,
-            detail: prevValue.detail
-        }))
-    }
-
-    const HandleChangeDetail = (e) => {
-        setInput((prevValue) => ({
-            title: prevValue.title,
-            detail: e.target.value
-        }))
+    const HandleChange = (e) => {
+        setInput({...input, [e.target.name]: e.target.value})
     }
 
     const HandleSubmit = (e) => {
@@ -56,11 +46,11 @@ const Form = (props) => {
             exit={{ opacity: 0 }}>
             <div className={"input-box " + (error ? "error" : "")}>
                 <label>Title:</label>
-                <input type="text" value={input.title} onChange={HandleChangeTitle} />
+                <input type="text" value={input.title} name="title" onChange={HandleChange} />
             </div>
             <div className="input-box">
                 <label>Detail:</label>
-                <input type="text" value={input.detail} onChange={HandleChangeDetail} />
+                <input type="text" value={input.detail} name="detail" onChange={HandleChange} />
             </div>
             <div className="btn">
                 <button type="submit">{props.type === "input" ? "Add" : "Update"}</button>

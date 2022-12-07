@@ -33,7 +33,7 @@ const CalendarSection = (props) => {
                     date: lastDateOfLastMonth - i + 1,
                     month: current.month - 1,
                     year: current.month === 1 ? current.year - 1 : current.year,
-                    isToday: CheckIsToday(lastDateOfLastMonth - i + 1),
+                    isToday: false,
                     isActive: false
                 })
             }
@@ -53,7 +53,7 @@ const CalendarSection = (props) => {
                     date: i - lastDayOfMonth + 1,
                     month: current.month + 1,
                     year: current.month === 11 ? current.year + 1 : current.year,
-                    isToday: CheckIsToday(i - lastDayOfMonth + 1),
+                    isToday: false,
                     isActive: false
                 })
             }

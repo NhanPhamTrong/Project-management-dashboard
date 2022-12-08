@@ -138,7 +138,7 @@ export const Projects = (props) => {
                 // budget
                 // member
                 // task list
-        <div id="projects" className="main-container active">
+        <div id="projects" className="main-container">
             <div className="create-btn" onClick={() => setIsCreate(true)}>
                 <button type="button">
                     <ion-icon name="add"></ion-icon>

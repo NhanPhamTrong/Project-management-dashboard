@@ -31,17 +31,19 @@
         
         ul {
             min-height: 2rem;
+            padding: 2rem 0;
             border: $on-surface solid 0.1rem;
             border-radius: 0.5rem;
             display: grid;
             grid-row-gap: 0.5rem;
             
             li {
-                padding: 0.5rem;
-                background: $primary;
-                border-radius: 0.25rem;
-                color: $on-primary;
-                cursor: pointer;
+                p {
+                    padding: 0.5rem;
+                    background: $primary;
+                    border-radius: 0.25rem;
+                    color: $on-primary;
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 import "./Calendar.scss"
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import { useEffect, useState } from "react"
 import { Modal } from "./Modal"
 
@@ -76,19 +77,6 @@ const CalendarSection = (props) => {
         }))
     }
 
-    const AllowDrop = (e) => {
-        e.preventDefault()
-    }
-
-    const Drag = (e) => {
-        e.dataTransfer.setData("text", e.currentTarget.id)
-    }
-
-    const Drop = (e, date) => {
-        e.preventDefault()
-        props.SetNewDate(date, parseInt(e.dataTransfer.getData("text")))
-    }
-
     return (
         <div className="calendar-section">
             <p className="current-date">
@@ -117,15 +105,25 @@ const CalendarSection = (props) => {
                         return (
                             <li key={index} className={date.isToday ? "today" : "" + (date.isActive ? "" : " inactive")}>
                                 <div>{date.date}</div>
-                                <ul onDrop={(e) => Drop(e, date)} onDragOver={AllowDrop}>
-                                    {props.eventList.map((item, index) => (item.year === date.year && item.month === date.month && item.date === date.date) && (
-                                        <li key={index}
-                                            id={item.id}
-                                            draggable="true"
-                                            onDragStart={Drag}
-                                            onClick={() => props.ClickEvent(item)}>{item.title}</li>
-                                    ))}
-                                </ul>
+                                    <Droppable droppableId={(date.month + 1) + "-" + date.date + "-" + date.year}>
+                                        {(provided) => (
+                                            <ul ref={provided.innerRef} {...provided.droppableProps}>
+                                                {props.eventList.map((item, index) => (item.year === date.year && item.month === date.month && item.date === date.date) && (
+                                                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                                        {(provided) => (
+                                                            <li onClick={() => props.ClickEvent(item)}
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}>
+                                                                    <p>{item.title}</p>
+                                                                </li>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                                {provided.placeholder}
+                                            </ul>
+                                        )}
+                                    </Droppable>
                             </li>
                         )
                     })}
@@ -150,24 +148,34 @@ export const Calendar = () => {
         year: 0
     })
 
-    const AllowDrop = (e) => {
-        e.preventDefault()
-    }
-      
-    const Drag = (e) => {
-        e.dataTransfer.setData("text", e.currentTarget.id)
-    }
+    const Drop = (result) => {
+        // setEventList(eventList.map((item) => item.id === parseInt(e.target.getAttribute("draggableId")) ? {
+        //     id: item.id,
+        //     title: item.title,
+        //     detail: item.detail,
+        //     date: 0,
+        //     month: 0,
+        //     year: 0
+        // } : item))
+        
+        const {destination, source, draggableId} = result
 
-    const Drop = (e) => {
-        e.preventDefault()
-        setEventList(eventList.map((item) => item.id === parseInt(e.dataTransfer.getData("text")) ? {
-            id: item.id,
-            title: item.title,
-            detail: item.detail,
-            date: 0,
-            month: 0,
-            year: 0
-        } : item))
+        if (!destination) {return}
+
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            return
+        }
+
+        const start = source.droppableId
+        const finish = destination.droppableId
+
+        if (start === finish) {
+            const newEventList = Array.from(eventList)
+            newEventList.splice(source.index, 1)            
+            newEventList.splice(destination.index, 0, eventList.filter((item) => item.id === parseInt(draggableId))[0])
+            
+            setEventList(newEventList)
+        }
     }
 
     const SetNewDate = (date, data) => {
@@ -238,28 +246,40 @@ export const Calendar = () => {
     }
 
     return (
-        <div id="calendar" className="main-container">
+        <div id="calendar" className="main-container active">
             <div className="heading">
                 <h1>Calendar</h1>
             </div>
-            <div className="event-section">
-                <button type="button" onClick={OpenAddEvent}>
-                    <ion-icon name="add-outline"></ion-icon>
-                    Add event
-                </button>
-                <ul onDrop={Drop} onDragOver={AllowDrop}>
-                    {eventList.map((item, index) => (item.year === 0 && item.month === 0 && item.date === 0) && (
-                        <li key={index}
-                            id={item.id}
-                            draggable="true"
-                            onDragStart={Drag}
-                            touch-action="none"
-                            onClick={() => ClickEvent(item)}>{item.title}</li>
-                    ))}
-                </ul>
-            </div>
+            
+            <DragDropContext onDragEnd={Drop}>
+                <div className="event-section">
+                    <button type="button" onClick={OpenAddEvent}>
+                        <ion-icon name="add-outline"></ion-icon>
+                        Add event
+                    </button>
+                        <Droppable droppableId="0-0-0">
+                            {(provided) => (
+                                <ul ref={provided.innerRef} {...provided.droppableProps}>
+                                    {eventList.map((item, index) => (item.year === 0 && item.month === 0 && item.date === 0) && (
+                                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {(provided) => (
+                                                <li onClick={() => ClickEvent(item)}
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}>
+                                                        <p>{item.title}</p>
+                                                    </li>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </ul>
+                            )}
+                        </Droppable>
+                </div>
 
-            <CalendarSection SetNewDate={SetNewDate} eventList={eventList} ClickEvent={ClickEvent} />
+                <CalendarSection SetNewDate={SetNewDate} eventList={eventList} ClickEvent={ClickEvent} />
+            </DragDropContext>
 
             <Modal type={type}
                 isActiveModal={isActiveModal}

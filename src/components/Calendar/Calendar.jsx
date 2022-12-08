@@ -253,6 +253,7 @@ export const Calendar = () => {
                             id={item.id}
                             draggable="true"
                             onDragStart={Drag}
+                            touch-action="none"
                             onClick={() => ClickEvent(item)}>{item.title}</li>
                     ))}
                 </ul>

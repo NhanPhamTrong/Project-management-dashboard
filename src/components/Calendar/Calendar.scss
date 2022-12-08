@@ -32,6 +32,7 @@
         ul {
             min-height: 2rem;
             border: $on-surface solid 0.1rem;
+            border-radius: 0.5rem;
             display: grid;
             grid-row-gap: 0.5rem;
             
@@ -84,13 +85,15 @@
             grid-row: 2;
             height: 100%;
             width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
 
             ul {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: repeat(7, minmax(5rem, calc(100% / 7)));
 
                 li {
-                    width: calc(100% / 7);
+                    width: 100%;
                     border: $on-surface solid 0.05rem;
                     color: $on-surface;
                     text-align: center;

@@ -99,7 +99,8 @@ export const Modal = (props) => {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}>
+                    exit={{ opacity: 0 }}
+                    style={{ padding: "2rem 1rem" }}>
                     <div className="icon">
                         <ion-icon name="checkmark-circle-outline"></ion-icon>
                     </div>

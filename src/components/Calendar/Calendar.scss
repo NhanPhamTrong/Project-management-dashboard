@@ -151,12 +151,26 @@
     }
 
     .modal {
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        pointer-events: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 102;
+        transition: 0.4s;
+        
         .modal-background {
             height: 100%;
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
             min-width: 80vw;
+            padding: 1rem;
+            background: $background;
+            border-radius: 0.5rem;
             position: absolute;
             left: 50%;
             top: 50%;
@@ -232,6 +246,11 @@
             }
         }
     }
+
+    .modal.active {
+        opacity: 1;
+        pointer-events: all;
+    }
 }
 
 @media only screen and (min-width: 600px) {
@@ -262,6 +281,12 @@
                 }
             }
         }
+        
+        .modal {
+            .modal-content {
+                min-width: 30rem;
+            }
+        }
     }
 }
 
@@ -288,8 +313,6 @@
 
         .modal {
             .modal-content {
-                min-width: 60vw;
-
                 .btn {
                     button {
                         padding: 1rem 1.5rem;
@@ -328,12 +351,6 @@
         .calendar-section {
             grid-column: 2;
             grid-row: 2;
-        }
-
-        .modal {
-            .modal-content {
-                min-width: 40vw;
-            }
         }
     }
 }

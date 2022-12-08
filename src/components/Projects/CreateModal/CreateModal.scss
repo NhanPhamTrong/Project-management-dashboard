@@ -178,7 +178,7 @@
             .submit-btn {
                 width: 100%;
                 display: flex;
-                justify-content: end;
+                justify-content: flex-end;
 
                 button {
                     padding: 0.75rem 1rem;
@@ -194,4 +194,28 @@
 .create-modal.active {
     opacity: 1;
     pointer-events: all;
+}
+
+@media only screen and (min-width: 600px) {
+    .create-modal {
+        .create-modal-content {
+            padding: 2rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .create-modal {
+        .create-modal-content {
+            width: 42rem;
+
+            .create-modal-form {
+                section:nth-child(1) {
+                    .w-100:nth-child(3), .w-100:nth-child(4) {
+                        width: 45%;
+                    }
+                }
+            }
+        }
+    }
 }

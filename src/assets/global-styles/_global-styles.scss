@@ -22,33 +22,6 @@ body {
                 left: 0;
                 top: 0;
                 transition: 0.4s;
-
-                .modal {
-                    height: 100%;
-                    width: 100%;
-                    opacity: 0;
-                    pointer-events: none;
-                    position: fixed;
-                    left: 0;
-                    top: 0;
-                    z-index: 102;
-                    transition: 0.4s;
-
-                    .modal-background {
-                        background: rgba(0, 0, 0, 0.4);
-                    }
-
-                    .modal-content {
-                        padding: 1rem;
-                        background: $background;
-                        border-radius: 0.5rem;
-                    }
-                }
-
-                .modal.active {
-                    opacity: 1;
-                    pointer-events: all;
-                }
             }
 
             .main-container.active {

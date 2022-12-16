@@ -20,12 +20,8 @@ const Form = (props) => {
         e.preventDefault()
 
         props.onSubmit({
-            id: Math.floor(Math.random() * 10000),
             title: input.title,
-            detail: input.detail,
-            date: props.type === "update" ? props.update.date : 0,
-            month: props.type === "update" ? props.update.month : 0,
-            year: props.type === "update" ? props.update.year : 0
+            detail: input.detail
         })
 
         if (input.title.trim().length !== 0) {

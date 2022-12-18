@@ -24,9 +24,11 @@ const renderEventContent = (eventInfo) => {
 }
 
 export const Calendar = () => {
+    const [type, setType] = useState("")    
     const [eventList, setEventList] = useState([])
-    const [type, setType] = useState("")
-
+    const [isActiveModal, setIsActiveModal] = useState(false)
+    const [dateClickInfo, setDateClickInfo] = useState()
+    const [eventClickInfo, setEventClickInfo] = useState()
     const [modal, setModal] = useState({
         id: null,
         title: "",
@@ -36,16 +38,12 @@ export const Calendar = () => {
     const CloseModal = () => {
         setIsActiveModal(false)
     }
-    
-    const [isActiveModal, setIsActiveModal] = useState(false)
-    const [dateClickInfo, setDateClickInfo] = useState()
-    const [eventClickInfo, setEventClickInfo] = useState()
 
     const handleDateSelect = (selectInfo) => {
         setDateClickInfo(selectInfo)
         setIsActiveModal(true)
         setType("input")
-    } 
+    }
 
     const AddEvent = (newEvent) => {
         let calendarApi = dateClickInfo.view.calendar

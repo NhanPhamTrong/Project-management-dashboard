@@ -121,7 +121,7 @@ export const Calendar = () => {
     }
 
     return (
-        <div id="calendar" className="main-container active">
+        <div id="calendar" className="main-container">
             <div className="heading">
                 <h1>Calendar</h1>
             </div>

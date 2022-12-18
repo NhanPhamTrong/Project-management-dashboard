@@ -5,14 +5,6 @@ import { ProjectDashboard } from "./ProjectDashboard/ProjectDashboard"
 import { GeneralDashboard } from "./GeneralDashboard/GeneralDashboard"
 
 export const Dashboard = () => {
-    // const oriHP = 7410
-    // const oriDef = 538
-
-    // const plusHP = 16095 + 673
-    // const plusDef = 1008 - 333
-
-    // console.log(((oriDef + plusDef) * 3.5 + 1140) * (oriHP + plusHP) / 1000)
-
     const [isGeneral, setIsGeneral] = useState(true)
     const [projectIndex, setProjectIndex] = useState(0)
 

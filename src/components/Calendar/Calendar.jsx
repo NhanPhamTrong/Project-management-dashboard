@@ -30,10 +30,7 @@ export const Calendar = () => {
     const [modal, setModal] = useState({
         id: null,
         title: "",
-        detail: "",
-        date: 0,
-        month: 0,
-        year: 0
+        detail: ""
     })
 
     const CloseModal = () => {
@@ -114,6 +111,7 @@ export const Calendar = () => {
         setEventList(eventList.map((event) => event.id === modal.id ? newValue : event))
 
         setModal({
+            id: null,
             title: "",
             detail: ""
         })
@@ -130,23 +128,25 @@ export const Calendar = () => {
                 <h1>Calendar</h1>
             </div>
 
-            <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                headerToolbar={{
-                    left: "prev,next",
-                    right: "title"
-                }}
-                initialView="dayGridMonth"
-                editable={true}
-                selectable={true}
-                selectMirror={true}
-                dayMaxEvents={true}
-                initialEvents={eventList} // alternatively, use the `events` setting to fetch from a feed
-                select={handleDateSelect}
-                eventContent={renderEventContent} // custom render function
-                eventClick={handleEventClick}
-                eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-            />
+            <div className="calendar-section">
+                <FullCalendar
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    headerToolbar={{
+                        left: "prev,next",
+                        right: "title"
+                    }}
+                    initialView="dayGridMonth"
+                    editable={true}
+                    selectable={true}
+                    selectMirror={true}
+                    dayMaxEvents={true}
+                    initialEvents={eventList}
+                    select={handleDateSelect}
+                    eventContent={renderEventContent} // custom render function
+                    eventClick={handleEventClick}
+                    eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+                />
+            </div>
 
             <Modal type={type}
                 isActiveModal={isActiveModal}

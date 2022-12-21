@@ -1,38 +1,32 @@
 import "./Projects.scss"
 import { CreateModal } from "./CreateModal/CreateModal"
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect } from "react"
+import { ProjectList } from "./ProjectList/ProjectList"
+import { ProjectDetail } from "./ProjectDetail/ProjectDetail"
+import { useState, useEffect } from "react"
+import { AnimatePresence } from "framer-motion"
 
-const ProjectListItem = (props) => {
-    return (
-        <li>
-            <button className="project-name" type="button">
-                {props.item.project.name}
-            </button>
-            <div className="project-menu">
-                <button className="project-menu-toggler" type="button" onClick={() => props.ClickMenu(props.item.id)}>
-                    <ion-icon name="ellipsis-horizontal"></ion-icon>
-                </button>
-                <div className={"project-options " + (props.item.isActive ? "active" : "")}>
-                    <button type="button" onClick={() => props.DeleteProject(props.item.id)}>Delete</button>
-                    {props.item.isOpened ? (
-                        <button type="button" onClick={() => props.CloseProject(props.item.id)}>Close project</button>
-                    ) : (
-                        <button type="button" onClick={() => props.OpenProject(props.item.id)}>Open project</button>
-                    )}
-                </div>
-            </div>
-        </li>
-    )
+const variants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { height: 0, opacity: 0 },
+    transition: { duration: 0.4 }
 }
 
-export const Projects = (props) => {
-    const [isCreate, setIsCreate] = useState(false)
+export const Projects = () => {
     const [isOpenedList, setIsOpenedList] = useState(true)
     const [isActiveSortOption, setIsActiveSortOption] = useState(false)
 
+    const [isDetail, setIsDetail] = useState(false)
+    const [shownDetail, setShownDetail] = useState()
+
+    const [isCreate, setIsCreate] = useState(false)
     const [projectList, setProjectList] = useState([])
+
+    const AddProject = (item) => {
+        projectList.push(item)
+        setProjectList((prevValue) => [...prevValue])
+        setIsCreate(false)
+    }
 
     const ClickOutsideSort = (e) => {
         if (e.target.classList.contains("sort-toggler") === false && e.target.closest("div").classList.contains("sort-options") === false) {
@@ -59,11 +53,6 @@ export const Projects = (props) => {
             document.removeEventListener("mousedown", ClickOutsideProjectMenu)
         })
     })
-
-    const AddProject = (item) => {
-        projectList.push(item)
-        setProjectList((prevValue) => [...prevValue])
-    }
 
     const ClickMenu = (id) => {
         let newList = projectList.map((item) => {
@@ -130,6 +119,73 @@ export const Projects = (props) => {
         setProjectList(newList)
     }
 
+    const ClickProject = (id) => {
+        setShownDetail(projectList.filter((item) => item.id === id)[0])
+        setIsDetail(true)
+    }
+
+    const ReturnToProjectList = () => {
+        setShownDetail()
+        setIsDetail(false)
+    }
+
+    const AddTask = (value) => {
+        let newList = projectList.map((project) => {
+            if (value.name.trim().length !== 0) {
+                project.taskList.push(value)
+            }
+
+            return project
+        })
+
+        setProjectList(newList)
+    }
+
+    const GetTaskUpdated = (id) => {
+        let newList = projectList.map((project) => {
+            project.taskList = project.taskList.map((task) => {
+                task.isGetTaskUpdated = task.id === id ? true : false
+                return task
+            })
+
+            return project
+        })
+
+        setProjectList(newList)
+    }
+
+    const SubmitUpdatedTask = (id, newValue) => {
+        if (newValue.name.trim().length === 0) {
+            let newList = projectList.map((project) => {
+                project.taskList = project.taskList.map((task) => {
+                    task.isGetTaskUpdated = false
+                    return task
+                })
+    
+                return project
+            })
+    
+            setProjectList(newList)
+        }
+        else {
+            let newList = projectList.map((project) => {
+                project.taskList = project.taskList.map((task) => task.id === id ? newValue : task)
+                return project
+            })
+
+            setProjectList(newList)
+        }
+    }
+
+    const DeleteTask = (id) => {
+        let newList = projectList.map((project) => {
+            project.taskList = project.taskList.filter((task) => task.id !== id)
+            return project
+        })
+
+        setProjectList(newList)
+    }
+
     return (
         // Project list
         // Project detail
@@ -138,7 +194,7 @@ export const Projects = (props) => {
                 // budget
                 // member
                 // task list
-        <div id="projects" className="main-container">
+        <div id="projects" className="main-container active">
             <div className="create-btn" onClick={() => setIsCreate(true)}>
                 <button type="button">
                     <ion-icon name="add"></ion-icon>
@@ -146,79 +202,38 @@ export const Projects = (props) => {
                 </button>
             </div>
             <hr />
-            <div className="project-list">
-                <div className="project-list-header">
-                    <div className="list-show-options">
-                        <button type="button" onClick={() => setIsOpenedList(true)}>
-                            <span>{projectList.filter((item) => item.isOpened).length}</span>
-                            Open
-                        </button>
-                        <button type="button" onClick={() => setIsOpenedList(false)}>
-                            <span>{projectList.filter((item) => !item.isOpened).length}</span>
-                            Close
-                        </button>
-                    </div>
-                    <div className="sort">
-                        <button className="sort-toggler" type="button" onClick={() => setIsActiveSortOption(!isActiveSortOption)}>
-                            Sort
-                            <ion-icon name="caret-down"></ion-icon>
-                        </button>
-                        <div className={"sort-options " + (isActiveSortOption ? "active" : "")}>
-                            <button type="button" onClick={SortNewest}>Newest</button>
-                            <button type="button" onClick={SortOldest}>Oldest</button>
-                            <button type="button" onClick={SortDeadline}>Deadline</button>
-                            <button type="button" onClick={SortAlphabet}>Alphabet</button>
-                        </div>
-                    </div>
-                </div>
+
+            {isDetail ? (
                 <AnimatePresence>
-                    {isOpenedList ? (
-                        <motion.ul
-                            className={projectList.filter((item) => item.isOpened).length === 0 ? "no-content" : ""}
-                            key="open-project"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.4 }}>
-                            {projectList.filter((item) => item.isOpened).length > 0 ? (
-                                projectList.filter((item) => item.isOpened).map((item, index) => (
-                                    <ProjectListItem
-                                        key={index}
-                                        item={item}
-                                        ClickMenu={ClickMenu}
-                                        DeleteProject={DeleteProject}
-                                        CloseProject={CloseProject}
-                                        OpenProject={OpenProject} />
-                                ))
-                            ) : (
-                                <h1>No opened projects</h1>
-                            )}
-                        </motion.ul>
-                    ) : (
-                        <motion.ul
-                            className={projectList.filter((item) => !item.isOpened).length === 0 ? "no-content" : ""}
-                            key="close-project"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.4 }}>
-                            {projectList.filter((item) => !item.isOpened).length > 0 ? (
-                                projectList.filter((item) => !item.isOpened).map((item, index) => (
-                                    <ProjectListItem
-                                        key={index}
-                                        item={item}
-                                        ClickMenu={ClickMenu}
-                                        DeleteProject={DeleteProject}
-                                        CloseProject={CloseProject}
-                                        OpenProject={OpenProject} />
-                                ))
-                            ) : (
-                                <h1>No closed projects</h1>
-                            )}
-                        </motion.ul>
-                    )}
+                    <ProjectDetail
+                        variants={variants}
+                        data={shownDetail}
+                        ReturnToProjectList={ReturnToProjectList}
+                        AddTask={AddTask}
+                        GetTaskUpdated={GetTaskUpdated}
+                        SubmitUpdatedTask={SubmitUpdatedTask}
+                        DeleteTask={DeleteTask} />
                 </AnimatePresence>
-            </div>
+                
+            ) : (
+                <ProjectList
+                    variants={variants}
+                    projectList={projectList}
+                    isOpenedList={isOpenedList}
+                    isActiveSortOption={isActiveSortOption}                    
+                    ClickProject={ClickProject} // Open project detail
+                    ClickMenu={ClickMenu} // Menu of project
+                    DeleteProject={DeleteProject}
+                    CloseProject={CloseProject}
+                    OpenProject={OpenProject}
+                    SortNewest={SortNewest}
+                    SortOldest={SortOldest}
+                    SortDeadline={SortDeadline}
+                    SortAlphabet={SortAlphabet}
+                    SetOpen={() => setIsOpenedList(true)}
+                    SetClose={() => setIsOpenedList(false)}
+                    SetSortOption={() => setIsActiveSortOption(!isActiveSortOption)} />
+            )}
 
             <CreateModal
                 isCreate={isCreate}

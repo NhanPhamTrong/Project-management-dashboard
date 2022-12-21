@@ -8,10 +8,10 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { useState } from "react"
 import { Modal } from "./Modal"
 
-let eventGuid = 0
+let eventId = 0
 
 const createEventId = () => {
-    return String(eventGuid++)
+    return String(eventId++)
 }
 
 const renderEventContent = (eventInfo) => {

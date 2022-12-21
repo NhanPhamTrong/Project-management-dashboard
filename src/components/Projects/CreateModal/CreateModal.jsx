@@ -84,7 +84,8 @@ const CreateModalForm = (props) => {
                 budget: {
                     total: input.total,
                     planned: input.planned
-                }
+                },
+                taskList: []
             })
     
             setInput({

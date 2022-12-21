@@ -1,1 +1,104 @@
 @import "../../../assets/global-styles/global-styles";
+
+.project-detail {
+    display: grid;
+    grid-row-gap: 1rem;
+
+    .header, .project-date, .project-budget, .task-list-section {
+        padding: 1rem;
+        background: $surface;
+        border-radius: 1rem;
+        color: $on-surface;
+    }
+
+    .header {
+        display: grid;
+        grid-template-columns: 3rem 1fr auto;
+        align-items: center;
+
+        button {
+            height: 3rem;
+            padding: 0 0.5rem;
+            background: $primary;
+            border-radius: 10rem;
+            color: $on-primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        .return-btn {
+            width: 3rem;
+            background: transparent;
+            color: $on-background;
+            font-size: 2rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .project-date, .project-budget {
+        display: grid;
+        grid-row-gap: 1rem;
+
+        .start, .end, .total, .planned, .actual {
+            display: flex;
+            justify-content: space-between;
+
+            p:nth-child(1) {
+                font-weight: 700;
+            }
+        }
+    }
+
+    .task-list-section {
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        form {
+            margin: 0.5rem 0;
+
+            input {
+                width: 100%;
+                padding: 0.5rem 0;
+            }
+        }
+
+        ul {
+            display: grid;
+            grid-row-gap: 0.5rem;
+
+            li {
+                background: $primary;
+                border-radius: 0.5rem;
+
+                .task {
+                    display: grid;
+                    grid-template-columns: 3rem 1fr 3rem;
+                    align-items: center;
+
+                    button {
+                        height: 3rem;
+                        color: $on-primary;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    button:nth-child(2) {
+                        justify-content: flex-start;
+                    }
+                }
+            }
+        }
+    }
+}

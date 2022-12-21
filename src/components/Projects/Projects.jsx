@@ -131,7 +131,7 @@ export const Projects = () => {
 
     const AddTask = (value) => {
         let newList = projectList.map((project) => {
-            if (value.name.trim().length !== 0) {
+            if (value.title.trim().length !== 0) {
                 project.taskList.push(value)
             }
 
@@ -155,7 +155,7 @@ export const Projects = () => {
     }
 
     const SubmitUpdatedTask = (id, newValue) => {
-        if (newValue.name.trim().length === 0) {
+        if (newValue.title.trim().length === 0) {
             let newList = projectList.map((project) => {
                 project.taskList = project.taskList.map((task) => {
                     task.isGetTaskUpdated = false

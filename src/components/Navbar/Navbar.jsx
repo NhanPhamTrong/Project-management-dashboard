@@ -6,7 +6,7 @@ export const Navbar = (props) => {
     const [isActive, setIsActive] = useState(false)
 
     const OpenSection = (e) => {
-        document.querySelectorAll("nav li button").forEach((item) => {
+        document.querySelectorAll("nav li button").forEach(item => {
             item.classList.remove("active")
         })
         e.currentTarget.classList.add(e.target.classList.contains("active") ? "" : "active")

@@ -1,87 +1,26 @@
 import "./ProjectDashboard.scss"
-import { DistinguishTask } from "../Data"
 
-// const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+const DistinguishTask = (taskList) => {
+    let overdueTaskList = []
+    let upcomingDeadlineList = []
 
-// const cost = {
-//     total: 200,
-//     actual: 86,
-//     planned: 90
-// }
+    taskList.forEach((item) => {
+        const end = new Date((item.end.month + 1) + "/" + item.end.date + "/" + item.end.year)
+        const difference = end - (new Date())
 
-// const taskList = [{
-//     title: "1",
-//     deadline: {
-//         date: 18,
-//         month: 6,
-//         year: 2023
-//     },
-//     state: false,
-//     employee: ""
-// },
-// {
-//     title: "2",
-//     deadline: {
-//         date: 12,
-//         month: 11,
-//         year: 2022
-//     },
-//     state: false,
-//     employee: ""
-// },
-// {
-//     title: "3",
-//     deadline: {
-//         date: 5,
-//         month: 10,
-//         year: 2022
-//     },
-//     state: false,
-//     employee: ""
-// },
-// {
-//     title: "4",
-//     deadline: {
-//         date: 23,
-//         month: 7,
-//         year: 2022
-//     },
-//     state: false,
-//     employee: ""
-// },
-// {
-//     title: "5",
-//     deadline: {
-//         date: 21,
-//         month: 0,
-//         year: 2023
-//     },
-//     state: false,
-//     employee: ""
-// },
-// {
-//     title: "6",
-//     deadline: {
-//         date: 27,
-//         month: 10,
-//         year: 2022
-//     },
-//     state: false,
-//     employee: ""
-// }]
+        if (difference > 0) {
+            upcomingDeadlineList.push(item)
+        }
+        else {
+            overdueTaskList.push(item)
+        }
+    })
 
-// const employee = [{
-//     name: "Anna",
-//     taskList: []
-// },
-// {
-//     name: "Alice",
-//     taskList: []
-// },
-// {
-//     name: "Mia",
-//     taskList: []
-// }]
+    return {
+        overdueTaskList: overdueTaskList,
+        upcomingDeadlineList: upcomingDeadlineList
+    }
+}
 
 const ProjectBudget = (props) => {
     const highestCost = Math.max(props.budget.total, props.budget.actual, props.budget.planned)
@@ -141,13 +80,13 @@ const OverdueTasks = (props) => {
     const unorderedContent = []
 
     props.distinguishTask.overdueTaskList.forEach((item) => {
-        const deadline = new Date(item.deadline.month + "/" + item.deadline.date + "/" + item.deadline.year)
-        const difference = Math.round(Math.abs(deadline - (new Date())) / (1000 * 3600 * 24))
+        const end = new Date(item.end.month + "/" + item.end.date + "/" + item.end.year)
+        const difference = Math.round(Math.abs(end - (new Date())) / (1000 * 3600 * 24))
 
         unorderedContent.push({
             overdue: difference,
             title: item.title,
-            deadline: item.deadline.month + "-" + item.deadline.date + "-" + item.deadline.year,
+            deadline: item.end.month + "-" + item.end.date + "-" + item.end.year,
             employee: "Anna"
         })
     })
@@ -225,8 +164,8 @@ const UpcomingDeadlines = (props) => {
         unorderedContent.push({
             employee: item.employee,
             task: item.title,
-            deadline: item.deadline.month + "-" + item.deadline.date + "-" + item.deadline.year,
-            workload: Math.round(item.miniTaskList.filter((miniTask) => miniTask.isCompleted).length / item.miniTaskList.length * 10000) / 100
+            deadline: item.end.month + "-" + item.end.date + "-" + item.end.year,
+            workload: item.miniTaskList.length !== 0 ? (Math.round(item.miniTaskList.filter((miniTask) => miniTask.isCompleted).length / item.miniTaskList.length * 10000) / 100) : 0
         })
     })
 

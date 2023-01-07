@@ -1,18 +1,26 @@
 import { useState } from "react"
 import "./CreateModal.scss"
 
+let projectId = 0
+
+const CreateProjectId = () => {
+    return String(projectId++)
+}
+
 const CreateModalForm = (props) => {
     const [input, setInput] = useState({
-        name: "",
+        title: "",
         start: {
             date: "",
             month: "",
-            year: ""
+            year: "",
+            dayForm: ""
         },
         end: {
             date: "",
             month: "",
-            year: ""
+            year: "",
+            dayForm: ""
         },
         member: "",
         total: "",
@@ -24,11 +32,7 @@ const CreateModalForm = (props) => {
         end: ""
     })
 
-    const [isMissing, setIsMissing] = useState({
-        start: false,
-        end: false,
-        inappropriate: false
-    })
+    const [isInappropriateDate, setIsInappropriateDate] = useState(false)
 
     const HandleChange = (e) => {
         let value = e.target.value
@@ -37,7 +41,8 @@ const CreateModalForm = (props) => {
             value = {
                 date: e.target.value.split("-")[2],
                 month: e.target.value.split("-")[1],
-                year: e.target.value.split("-")[0]
+                year: e.target.value.split("-")[0],
+                dayForm: e.target.value
             }
 
             setDateInput({...dateInput, [e.target.name]: e.target.value})
@@ -51,54 +56,43 @@ const CreateModalForm = (props) => {
 
         const start = new Date(input.start.month + "-" + input.start.date + "-" + input.start.year)
         const end = new Date(input.end.month + "-" + input.end.date + "-" + input.end.year)
-
-        if (isNaN(start)) {
-            setIsMissing({...isMissing, start: true})
-        }
-        else if (isNaN(end)) {
-            setIsMissing({...isMissing, start: false, end: true})
-        }
-        else if (end - start <= 0) {
-            setIsMissing({start: false, end: false, inappropriate: true})
+        
+        if (end - start <= 0) {
+            setIsInappropriateDate(true)
         }
         else {
             props.onSubmit({
-                id: Math.floor(Math.random() * 1000),
+                id: CreateProjectId(),
                 createdTime: new Date(),
                 isOpened: true,
                 isActive: false,
                 project: {
-                    name: input.name,
-                    start: {
-                        date: input.start.date,
-                        month: input.start.month,
-                        year: input.start.year
-                    },
-                    end: {
-                        date: input.end.date,
-                        month: input.end.month,
-                        year: input.end.year
-                    }
+                    title: input.title,
+                    start: input.start,
+                    end: input.end
                 },
                 member: "",
                 budget: {
                     total: input.total,
-                    planned: input.planned
+                    planned: input.planned,
+                    actual: 0
                 },
                 taskList: []
             })
     
             setInput({
-                name: "",
+                title: "",
                 start: {
                     date: "",
                     month: "",
-                    year: ""
+                    year: "",
+                    dayForm: ""
                 },
                 end: {
                     date: "",
                     month: "",
-                    year: ""
+                    year: "",
+                    dayForm: ""
                 },
                 member: "",
                 total: "",
@@ -110,11 +104,7 @@ const CreateModalForm = (props) => {
                 end: ""
             })
 
-            setIsMissing({
-                start: false,
-                end: false,
-                inappropriate: false
-            })
+            setIsInappropriateDate(false)
         }
     }
 
@@ -124,36 +114,36 @@ const CreateModalForm = (props) => {
                 <h1>Project</h1>
                 <div className="w-100">
                     <input
-                        id="project-name"
+                        id="project-title"
                         type="text"
-                        value={input.name}
-                        name="name"
+                        value={input.title}
+                        name="title"
                         onChange={HandleChange}
                         required />
-                    <label htmlFor="project-name">Project name</label>
+                    <label htmlFor="project-title">Project name</label>
                 </div>
                 <div className="w-100">
                     <input
                         id="project-start"
-                        className={isMissing.start ? "error" : ""}
                         type="date"
                         value={dateInput.start}
                         name="start"
-                        onChange={HandleChange} />
+                        onChange={HandleChange}
+                        required />
                     <label htmlFor="project-start">Start</label>
-                    <p className={isMissing.start ? "error" : ""}>Missing start day</p>
                 </div>
                 <div className="w-100">
                     <input
                         id="project-end"
-                        className={(isMissing.end || isMissing.inappropriate) ? "error" : ""}
+                        className={isInappropriateDate ? "error" : ""}
                         type="date"
                         value={dateInput.end}
                         name="end"
-                        onChange={HandleChange} />
+                        onChange={HandleChange}
+                        required />
                     <label htmlFor="project-end">End</label>
-                    <p className={(isMissing.end || isMissing.inappropriate) ? "error" : ""}>
-                        {isMissing.end ? "Missing end day" : "Inappropriate end day (must be after start day)"}
+                    <p className={isInappropriateDate ? "error" : ""}>
+                        Inappropriate end day (must be after start day)
                     </p>
                 </div>
             </section>
@@ -201,10 +191,6 @@ const CreateModalForm = (props) => {
 }
 
 export const CreateModal = (props) => {
-    const AddProject = (item) => {
-        props.AddProject(item)
-    }
-
     return (
         // CREATE MODAL CONTENT
         // Project: name, start, end
@@ -214,10 +200,10 @@ export const CreateModal = (props) => {
             // Deadline
             // Mini task list
                 // Description
-        <div className={"create-modal " + (props.isCreate ? "active" : "")}>
+        <div className={"create-modal " + (props.isCreated ? "active" : "")}>
             <div className="create-modal-background" onClick={() => props.CloseModal()}></div>
             <div className="create-modal-content">
-                <CreateModalForm onSubmit={AddProject} />
+                <CreateModalForm onSubmit={item => props.CreateProject(item)} />
             </div>
         </div>
     )

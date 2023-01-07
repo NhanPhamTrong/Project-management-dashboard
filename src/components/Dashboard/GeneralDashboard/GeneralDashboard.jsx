@@ -2,79 +2,33 @@ import "./GeneralDashboard.scss"
 import { motion } from "framer-motion"
 import { wrap } from "popmotion"
 import React, { useEffect, useRef, useState } from "react"
-import { DistinguishTask } from "../Data"
 
-// const content = [{
-//     project: {
-//         name: "Project 1",
-//         start: "9/12/2022",
-//         end: "2/16/2023"
-//     },
-//     progress: 46, // Percent of completed task / taskList.length
-//     budget: {
-//         planned: 429,
-//         actual: 537
-//     },
-//     overdue: {
-//         high: 2,    
-//         medium: 1,
-//         low: 3
-//     }
-// },
-// {
-//     project: {
-//         name: "Project 2",
-//         start: "8/28/2022",
-//         end: "1/12/2023"
-//     },
-//     progress: 73,
-//     budget: {
-//         planned: 477,
-//         actual: 586
-//     },
-//     overdue: {
-//         high: 3,
-//         medium: 2,
-//         low: 1
-//     }
-// },
-// {
-//     project: {
-//         name: "Project 3",
-//         start: "5/12/2022",
-//         end: "8/21/2023"
-//     },
-//     progress: 58,
-//     budget: {
-//         planned: 753,
-//         actual: 486
-//     },
-//     overdue: {
-//         high: 1,
-//         medium: 2,
-//         low: 1
-//     }
-// },
-// {
-//     project: {
-//         name: "Project 4",
-//         start: "9/26/2022",
-//         end: "2/3/2023"
-//     },
-//     progress: 35,
-//     budget: {
-//         planned: 356,
-//         actual: 267
-//     },
-//     overdue: {
-//         high: 4,
-//         medium: 2,
-//         low: 2
-//     }
-// }]
+const DistinguishTask = (taskList) => {
+    let overdueTaskList = []
+    let upcomingDeadlineList = []
+
+    taskList.forEach((item) => {
+        const end = new Date((item.end.month + 1) + "/" + item.end.date + "/" + item.end.year)
+        const difference = end - (new Date())
+
+        if (difference > 0) {
+            upcomingDeadlineList.push(item)
+        }
+        else {
+            overdueTaskList.push(item)
+        }
+    })
+
+    return {
+        overdueTaskList: overdueTaskList,
+        upcomingDeadlineList: upcomingDeadlineList
+    }
+}
 
 const GeneralDashboardContent = (props) => {
-    const progress = Math.round(props.item.taskList.filter((item) => item.isCompleted).length / props.item.taskList.length * 10000) / 100
+    const progress = props.item.taskList.length !== 0 ? (
+        Math.round(props.item.taskList.filter((item) => item.isCompleted).length / props.item.taskList.length * 10000) / 100
+    ) : 0
 
     const maxBudget = Math.max(props.item.budget.planned, props.item.budget.actual)
     const budgetChartHeight = [props.item.budget.planned / maxBudget * 100, props.item.budget.actual / maxBudget * 100]
@@ -84,8 +38,8 @@ const GeneralDashboardContent = (props) => {
     let low = []
     
     DistinguishTask(props.item.taskList).overdueTaskList.forEach((item) => {
-        const deadline = new Date((item.deadline.month + 1) + "/" + item.deadline.date + "/" + item.deadline.year)
-        const difference = Math.round(Math.abs(deadline - (new Date())) / (1000 * 3600 * 24))
+        const end = new Date((item.end.month + 1) + "/" + item.end.date + "/" + item.end.year)
+        const difference = Math.round(Math.abs(end - (new Date())) / (1000 * 3600 * 24))
 
         if (difference < 5) {
             low.push(item)
@@ -101,13 +55,13 @@ const GeneralDashboardContent = (props) => {
     const maxOverdue = Math.max(high.length, medium.length, low.length)
     const overdueChartHeight = [high.length / maxOverdue * 100, medium.length / maxOverdue * 100, low.length / maxOverdue * 100]
 
-    const projectStart = (props.item.project.start.month + 1) + "-" + props.item.project.start.date + "-" + props.item.project.start.year
-    const projectEnd = (props.item.project.end.month + 1) + "-" + props.item.project.end.date + "-" + props.item.project.end.year
+    const projectStart = props.item.project.start.month + "-" + props.item.project.start.date + "-" + props.item.project.start.year
+    const projectEnd = props.item.project.end.month + "-" + props.item.project.end.date + "-" + props.item.project.end.year
 
     return (
         <motion.div
             className="general-content"
-            key={props.item.project.name}
+            key={props.item.project.title}
             custom={props.direction}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -117,8 +71,8 @@ const GeneralDashboardContent = (props) => {
                 <button type="button" onClick={() => props.paginate(-1)}>
                     <ion-icon name="arrow-back"></ion-icon>
                 </button>
-                <button className="name" type="button" onClick={() => props.GetProjectIndex(props.item.project.name)}>
-                    {props.item.project.name}
+                <button className="name" type="button" onClick={() => props.GetProjectIndex(props.item.id)}>
+                    <p>{props.item.project.title}</p>
                 </button>
                 <button type="button" onClick={() => props.paginate(1)}>
                     <ion-icon name="arrow-forward"></ion-icon>
@@ -208,7 +162,7 @@ export const GeneralDashboard = (props) => {
                 <h1>Overdue</h1>
             </div>
             <React.Fragment key={carouselWidth}>
-                {isSmall ? (
+                {(isSmall && props.data.length !== 0) ? (
                     <motion.div className="carousel" ref={carousel}>
                         <GeneralDashboardContent item={props.data[contentIndex]} direction={direction} paginate={paginate} GetProjectIndex={GetProjectIndex} />
                     </motion.div>

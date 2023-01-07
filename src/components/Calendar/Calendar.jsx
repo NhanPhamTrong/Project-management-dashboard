@@ -23,9 +23,8 @@ const renderEventContent = (eventInfo) => {
     )
 }
 
-export const Calendar = () => {
-    const [type, setType] = useState("")    
-    const [eventList, setEventList] = useState([])
+export const Calendar = (props) => {
+    const [type, setType] = useState("")
     const [isActiveModal, setIsActiveModal] = useState(false)
     const [dateClickInfo, setDateClickInfo] = useState()
     const [eventClickInfo, setEventClickInfo] = useState()
@@ -40,6 +39,7 @@ export const Calendar = () => {
     }
 
     const handleDateSelect = (selectInfo) => {
+        console.log(selectInfo)
         setDateClickInfo(selectInfo)
         setIsActiveModal(true)
         setType("input")
@@ -50,8 +50,6 @@ export const Calendar = () => {
         calendarApi.unselect()
 
         if (newEvent.title.trim().length !== 0) {
-            eventList.push(newEvent)
-            setEventList(prevValue => [...prevValue, newEvent])
             setType("completed")
 
             calendarApi.addEvent({
@@ -59,8 +57,7 @@ export const Calendar = () => {
                 title: newEvent.title,
                 detail: newEvent.detail,
                 start: dateClickInfo.startStr,
-                end: dateClickInfo.endStr,
-                allDay: dateClickInfo.allDay
+                end: dateClickInfo.endStr
             })
         }
     }
@@ -78,7 +75,6 @@ export const Calendar = () => {
 
     const ClickRemove = (id) => {
         eventClickInfo.event.remove()
-        setEventList(eventList.filter((item) => item.id !== id))
         setType("completed")
     }
 
@@ -101,12 +97,9 @@ export const Calendar = () => {
                 title: newValue.title,
                 detail: newValue.detail,
                 start: dateClickInfo.startStr,
-                end: dateClickInfo.endStr,
-                allDay: dateClickInfo.allDay
+                end: dateClickInfo.endStr
             })
         }
-
-        setEventList(eventList.map((event) => event.id === modal.id ? newValue : event))
 
         setModal({
             id: null,
@@ -114,10 +107,6 @@ export const Calendar = () => {
             detail: ""
         })
         setType("completed")
-    }
-
-    const handleEvents = (events) => {
-        setEventList(events)
     }
 
     return (
@@ -138,15 +127,14 @@ export const Calendar = () => {
                     selectable={true}
                     selectMirror={true}
                     dayMaxEvents={true}
-                    initialEvents={eventList}
                     select={handleDateSelect}
                     eventContent={renderEventContent} // custom render function
                     eventClick={handleEventClick}
-                    eventsSet={handleEvents} // called after events are initialized/added/changed/removed
                 />
             </div>
 
-            <Modal type={type}
+            <Modal
+                type={type}
                 isActiveModal={isActiveModal}
                 item={modal}
                 CloseModal={CloseModal}

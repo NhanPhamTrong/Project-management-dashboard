@@ -13,12 +13,12 @@
 
     .header {
         display: grid;
-        grid-template-columns: 3rem 1fr auto;
+        grid-template-columns: 2rem 1fr auto;
         align-items: center;
 
         button {
             height: 3rem;
-            padding: 0 0.5rem;
+            padding: 0 1rem;
             background: $primary;
             border-radius: 10rem;
             color: $on-primary;
@@ -27,6 +27,7 @@
             justify-content: center;
 
             span {
+                margin-left: 0.5rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -34,14 +35,18 @@
         }
 
         .return-btn {
-            width: 3rem;
+            height: 2rem;
+            width: 2rem;
+            padding: 0;
             background: transparent;
             color: $on-background;
-            font-size: 2rem;
         }
 
         h1 {
             font-size: 1.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 
@@ -61,7 +66,7 @@
 
     .task-list-section {
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
         }
 
         form {
@@ -69,7 +74,49 @@
 
             input {
                 width: 100%;
-                padding: 0.5rem 0;
+                padding: 0.5rem;
+                border: $on-surface solid 0.05rem;
+                border-radius: 0.5rem;
+            }
+
+            input:nth-child(2) {
+                margin: 0.5rem 0;
+            }
+
+            input:valid, input:focus {
+                border: $on-surface solid 0.1rem;
+            }
+
+            input.error {
+                border: $error solid 0.05rem;
+            }
+
+            input.error:focus ~ label,
+            input.error:valid ~ label {
+                color: $error;
+            }
+
+            p {
+                height: 0;
+                color: $error;
+                font-size: 0.75rem;
+                font-weight: 700;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            p.error {
+                height: auto;
+                margin-bottom: 0.5rem;
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                background: $primary;
+                border-radius: 0.5rem;
+                color: $on-primary;
             }
         }
 
@@ -78,25 +125,190 @@
             grid-row-gap: 0.5rem;
 
             li {
-                background: $primary;
+                background: $surface;
+                border: $primary solid 0.1rem;
                 border-radius: 0.5rem;
 
                 .task {
+                    color: $on-surface;
                     display: grid;
                     grid-template-columns: 3rem 1fr 3rem;
                     align-items: center;
 
                     button {
                         height: 3rem;
-                        color: $on-primary;
+                        color: $on-surface;
                         display: flex;
                         align-items: center;
                         justify-content: center;
+                        transition: 0.4s;
                     }
 
                     button:nth-child(2) {
                         justify-content: flex-start;
                     }
+
+                    .open-mini-task-btn.active {
+                        transform: rotate(90deg);
+                    }
+
+
+                    form {
+                        button {
+                            height: auto;
+                            padding: 0.5rem 1rem;
+                            color: $on-primary;
+                        }
+                    }
+
+                    .task-menu {
+                        margin-left: 0.5rem;
+                        border-radius: 10rem;
+                        position: relative;
+            
+                        .task-menu-toggler {
+                            height: 2rem;
+                            width: 2rem;
+                            border-radius: 10rem;
+                            color: $on-surface;
+                            transition: 0.4s;
+                        }
+                
+                        .task-menu-toggler.active, .task-menu-toggler:hover {
+                            background-color: rgba(0, 0, 0, 0.2);
+                            transition: 0.4s;
+                        }
+                
+                        .task-options {
+                            background-color: $primary;
+                            border-radius: 0.5rem;
+                            display: none;
+                            position: absolute;
+                            right: -0.1rem;
+                            z-index: 10;
+                
+                            button {
+                                width: 100%;
+                                padding: 0.75rem 1rem;
+                                color: $on-primary;
+                                transition: 0.2s;
+                            }
+                
+                            button:hover {
+                                background-color: rgba(255, 255, 255, 0.2);
+                                transition: 0.2s;
+                            }
+                
+                            .update {
+                                border-radius: 0.5rem 0.5rem 0 0;
+                            }
+                
+                            .delete {
+                                border-radius: 0 0 0.5rem 0.5rem;
+                            }
+                        }
+                
+                        .task-options.active {
+                            animation: fadeIn 0.4s;
+                            display: block;
+                        }
+                    }
+                }
+
+                .mini-task-list-section {
+                    height: 0;
+                    opacity: 0;
+                    overflow: hidden;
+                    pointer-events: none;
+                    transition: 0.4s;
+
+                    form {
+                        margin: 0 1rem 0.5rem;
+                    }
+
+                    ul {
+                        grid-row-gap: 0;
+
+                        li {
+                            margin: 0 1rem 0.5rem 1rem;
+
+                            .mini-task {
+                                display: grid;
+                                grid-template-columns: 3rem 1fr 3rem;
+                                align-items: center;
+
+                                .checkbox {
+                                    height: 3rem;
+                                    width: 3rem;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+
+                                    button {
+                                        height: 1.5rem;
+                                        width: 1.5rem;
+                                        background: $primary;
+                                        border-radius: 10rem;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+
+                                        span {
+                                            height: 85%;
+                                            width: 85%;
+                                            background: $surface;
+                                            border-radius: 10rem;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+
+                                            ion-icon {
+                                                color: $on-surface;
+                                                display: none;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .checkbox.active {
+                                    button {
+                                        span {
+                                            background: $secondary;
+
+                                            ion-icon {
+                                                display: block;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                form {
+                                    margin: 0.5rem 0;
+                                }
+
+                                button {
+                                    height: 3rem;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+
+                                    ion-icon {
+                                        font-size: 1.5rem;
+                                    }
+                                }
+
+                                button:nth-child(2) {
+                                    text-align: left;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .mini-task-list-section.active {
+                    height: calc(var(--c) * 3.7rem + 3rem);
+                    opacity: 1;
+                    pointer-events: all;
                 }
             }
         }

@@ -16,7 +16,9 @@ body {
             position: relative;
 
             .main-container {
+                height: 0;
                 opacity: 0;
+                overflow: hidden;
                 pointer-events: none;
                 position: absolute;
                 left: 0;
@@ -25,7 +27,9 @@ body {
             }
 
             .main-container.active {
+                height: auto;
                 opacity: 1;
+                overflow: visible;
                 pointer-events: all;
             }
         }

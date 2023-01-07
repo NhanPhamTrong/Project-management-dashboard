@@ -1,135 +1,123 @@
 import "./ProjectDetail.scss"
 import { motion } from "framer-motion"
 import { useState } from "react"
+import { useEffect, useRef } from "react"
+import { TaskForm, MiniTaskForm } from "./ProjectDetailForm"
 
-let taskId = 0
-// let miniTaskId = 0
-
-const CreateTaskId = () => {
-    return String(taskId++)
-}
-
-// const CreateMiniTaskId = () => {
-//     return String(miniTaskId++)
-// }
-
-const TaskForm = (props) => {
-    const [input, setInput] = useState({
-        title: props.type === "update" ? props.update.title : "",
-        end: props.type === "update" ? props.update.end : {
-            date: "",
-            month: "",
-            year: ""
-        }
-    })
-    const [dateInput, setDateInput] = useState("")
-
-    const HandleChange = (e) => {
-        let value = e.target.value
-
-        if (e.target.name === "end") {
-            value = {
-                date: e.target.value.split("-")[2],
-                month: e.target.value.split("-")[1],
-                year: e.target.value.split("-")[0]
-            }
-
-            setDateInput(e.target.value)
-        }
-
-        setInput({...input, [e.target.name]: value})
-    }
-
-    const HandleSubmit = (e) => {
-        e.preventDefault()
-
-        props.onSubmit({
-            id: CreateTaskId(),
-            title: input.title,
-            end: dateInput,
-            miniTaskList: []
-        })
-
-        setInput({
-            title: "",
-            end: {
-                date: "",
-                month: "",
-                year: ""
-            }
-        })
-
-        setDateInput("")
-    }
-
-    return props.type === "update" ? (
-        <form onSubmit={HandleSubmit}>
-            <input type="text" value={input.title} name="title" onChange={HandleChange} />
-            <input
-                id="task-end"
-                type="date"
-                value={dateInput}
-                name="end"
-                onChange={HandleChange} />
-            <button type="submit">Submit</button>
-        </form>
-    ) : (
-        <form onSubmit={HandleSubmit}>
-            <input type="text" value={input.title} name="title" placeholder="Task's title..." onChange={HandleChange} />
-            <input
-                id="task-end"
-                type="date"
-                value={dateInput}
-                name="end"
-                onChange={HandleChange} />
-            <button type="submit">Submit</button>
-        </form>
+const MiniTask = (props) => {
+    return (        
+        <div
+            className={"mini-task-list-section " + (props.isOpenMiniTaskList ? "active" : "")}
+            style={{ "--c": props.task.miniTaskList.length }}>
+            <MiniTaskForm type="input" onSubmit={(value) => props.CreateMiniTask(value)} />
+            <ul>
+                {props.task.miniTaskList.map((miniTask, index) => (
+                    <li key={index}>
+                        <div className="mini-task">
+                            <div className={"checkbox " + (miniTask.isCompleted ? "active" : "")}>
+                                <button
+                                    type="button"
+                                    onClick={() => props.GetMiniTaskCompleted(miniTask.id)}>
+                                    <span>
+                                        <ion-icon name="checkmark"></ion-icon>
+                                    </span>
+                                </button>
+                            </div>
+                            {miniTask.isGetMiniTaskUpdated ? (
+                                <MiniTaskForm
+                                    type="update"
+                                    update={miniTask}
+                                    onSubmit={(newValue) => props.SubmitUpdatedMiniTask(miniTask.id, newValue)} />
+                            ) : (
+                                <button type="button" onClick={() => props.GetMiniTaskUpdated(miniTask.id)}>{miniTask.title}</button>
+                            )}
+                            <button type="button" onClick={() => props.DeleteMiniTask(miniTask.id)}>
+                                <ion-icon name="trash"></ion-icon>
+                            </button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 }
 
-// const MiniTaskForm = (props) => {
-//     const [input, setInput] = useState(props.type === "update" ? props.update.title : "")
+const Task = (props) => {
+    const ref = useRef()
+    const [isOpen, setIsOpen] = useState(false)
+    const [isOpenMiniTaskList, setIsOpenMiniTaskList] = useState(false)
 
-//     const HandleChange = (e) => {
-//         setInput(e.target.value)
-//     }
+    useEffect(() => {
+        const HandleClickOutside = (e) => {
+            if (isOpen && ref.current && !ref.current.contains(e.target)) {
+                setIsOpen(false)
+            }
+        }
 
-//     const HandleSubmit = (e) => {
-//         e.preventDefault()
+        document.addEventListener("mousedown", HandleClickOutside)
+        return (() => {
+            document.removeEventListener("mousedown", HandleClickOutside)
+        })
+    })
 
-//         props.onSubmit({
-//             id: CreateMiniTaskId(),
-//             name: input
-//         })
+    const GetTaskUpdated = () => {
+        setIsOpen(false)
+        props.GetTaskUpdated()
+    }
 
-//         setInput("")
-//     }
-
-//     return props.type === "update" ? (
-//         <form onSubmit={HandleSubmit}>
-//             <input type="text" value={input} onChange={HandleChange} />
-//         </form>
-//     ) : (
-//         <form onSubmit={HandleSubmit}>
-//             <input type="text" value={input} placeholder="Task's title..." onChange={HandleChange} />
-//         </form>
-//     )
-// }
+    return (
+        <li>
+            <div className="task">
+                <button
+                    className={"open-mini-task-btn " + (isOpenMiniTaskList ? "active" : "")}
+                    type="button"
+                    onClick={() => setIsOpenMiniTaskList(!isOpenMiniTaskList)}>
+                        <ion-icon name="chevron-forward"></ion-icon>
+                </button>
+                {props.task.isGetTaskUpdated ? (
+                    <TaskForm
+                        type="update"
+                        data={props.data}
+                        update={props.task}
+                        onSubmit={(newValue) => props.SubmitUpdatedTask(newValue)} />
+                ) : (
+                    <p>{props.task.title}</p>
+                )}
+                <div className="task-menu" ref={ref}>
+                    <button
+                        className={"task-menu-toggler " + (isOpen ? "active" : "")}
+                        type="button"
+                        onClick={() => setIsOpen(!isOpen)}>
+                            <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </button>
+                    <div className={"task-options " + (isOpen ? "active" : "")}>
+                        <button
+                            className="update"
+                            type="button"
+                            onClick={GetTaskUpdated}>Update</button>
+                        <button
+                            className="delete"
+                            type="button"
+                            onClick={() => props.DeleteTask()}>Delete</button>
+                    </div>
+                </div>
+            </div>
+            <MiniTask
+                isOpenMiniTaskList={isOpenMiniTaskList}
+                data={props.data}
+                task={props.task}
+                CreateMiniTask={value => props.CreateMiniTask(props.data.id, props.task.id, value)}
+                GetMiniTaskCompleted={miniTaskId => props.GetMiniTaskCompleted(props.data.id, props.task.id, miniTaskId)}
+                SubmitUpdatedMiniTask={(miniTaskId, newValue) => props.SubmitUpdatedMiniTask(props.data.id, props.task.id, miniTaskId, newValue)}
+                GetMiniTaskUpdated={miniTaskId => props.GetMiniTaskUpdated(props.data.id, props.task.id, miniTaskId)}
+                DeleteMiniTask={miniTaskId => props.DeleteMiniTask(props.data.id, props.task.id, miniTaskId)} />
+        </li>
+    )
+}
 
 export const ProjectDetail = (props) => {
-    const [updateTaskId, setUpdateTaskId] = useState()
-    // const [updateMiniTaskId, setUpdateMiniTaskId] = useState()
-
     const GetDate = (item) => {
         return item.month + "-" + item.date + "-" + item.year
-    }
-
-    const AddTask = (value) => {
-        props.AddTask(value)
-    }
-
-    const SubmitUpdatedTask = (newValue) => {
-        props.SubmitUpdatedTask(updateTaskId, newValue)
     }
 
     return (
@@ -149,7 +137,7 @@ export const ProjectDetail = (props) => {
                     <ion-icon name="caret-back-outline"></ion-icon>
                 </button>
                 <h1>{props.data.project.title}</h1>
-                <button type="button">
+                <button type="button" onClick={() => props.GoToProjectDashboard(props.data.id)}>
                     Project dashboard
                     <span>
                         <ion-icon name="arrow-forward"></ion-icon>
@@ -182,40 +170,26 @@ export const ProjectDetail = (props) => {
             </div>
             <div className="task-list-section">
                 <h1>Task list</h1>
-                <TaskForm type="input" onSubmit={AddTask} />
+                <TaskForm
+                    type="input"
+                    data={props.data}
+                    onSubmit={(value) => props.CreateTask(props.data.id, value)} />
                 <ul>
                     {props.data.taskList.map((task, index) => (
-                        <li key={index}>
-                            <div className="task">
-                                <button type="button" onClick={() => props.OpenMiniTaskList(task.id)}>
-                                    <ion-icon name="chevron-forward"></ion-icon>
-                                </button>
-                                {task.isGetTaskUpdated ? (
-                                    <TaskForm type="update" update={task} onSubmit={SubmitUpdatedTask} />
-                                ) : (
-                                    <button type="button" onClick={() => {
-                                        setUpdateTaskId(task.id)
-                                        props.GetTaskUpdated(task.id)
-                                    }}>{task.title}</button>
-                                )}
-                                <button type="button" onClick={() => props.DeleteTask(task.id)}>
-                                    <ion-icon name="trash"></ion-icon>
-                                </button>
-                            </div>
-                            <ul>
-                                {/* {task.miniTaskList.map((miniTask) => (
-                                    <li>
-                                        <div className="mini-task">
-                                            <div className="checkbox"></div>
-                                            <button type="button" onClick={() => {
-                                                setUpdateMiniTaskId(miniTask.id)
-                                                props.GetMiniTaskUpdated(miniTask.id)
-                                            }}>{miniTask.title}</button>
-                                        </div>
-                                    </li>
-                                ))} */}
-                            </ul>
-                        </li>
+                        <Task
+                            key={index}
+                            data={props.data}
+                            task={task}
+                            OpenMiniTaskList={() => props.OpenMiniTaskList(props.data.id, task.id)}
+                            SubmitUpdatedTask={newValue => props.SubmitUpdatedTask(props.data.id, task.id, newValue)}
+                            GetTaskUpdated={() => props.GetTaskUpdated(props.data.id, task.id)}
+                            DeleteTask={() => props.DeleteTask(props.data.id, task.id)}
+                            // Mini task CRUD
+                            CreateMiniTask={(projectId, taskId, value) => props.CreateMiniTask(projectId, taskId, value)}
+                            GetMiniTaskCompleted={(projectId, taskId, miniTaskId) => props.GetMiniTaskCompleted(projectId, taskId, miniTaskId)}
+                            SubmitUpdatedMiniTask={(projectId, taskId, miniTaskId, newValue) => props.SubmitUpdatedMiniTask(projectId, taskId, miniTaskId, newValue)}
+                            GetMiniTaskUpdated={(projectId, taskId, miniTaskId) => props.GetMiniTaskUpdated(projectId, taskId, miniTaskId)}
+                            DeleteMiniTask={(projectId, taskId, miniTaskId) => props.DeleteMiniTask(projectId, taskId, miniTaskId)}/>
                     ))}
                 </ul>
             </div>

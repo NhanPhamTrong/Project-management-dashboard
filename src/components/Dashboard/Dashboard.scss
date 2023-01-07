@@ -2,7 +2,32 @@
 
 #dashboard {
     width: 100%;
-    padding: 7rem 0.5rem 0.5rem 0.5rem;
+    padding: 2rem 0.5rem 0.5rem 0.5rem;
+
+    .create-btn {
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+            height: 3rem;
+            width: max-content;
+            padding: 0 1rem;
+            background: $primary;
+            border-radius: 10rem;
+            color: $on-primary;
+            display: flex;
+            align-items: center;
+
+            ion-icon {
+                margin-right: 0.25rem;
+                font-size: 1.25rem;
+            }
+        }
+    }
+
+    hr {
+        margin: 1rem 0;
+    }
 
     .position {
         margin-bottom: 1rem;
@@ -18,12 +43,27 @@
 
 @media only screen and (min-width: 600px) {
     #dashboard {
-        padding: 8rem 1rem 1rem 1rem;
+        padding: 2rem 1rem 1rem 1rem;
+
+        .create-btn {
+            button {
+                height: 4rem;
+                font-size: 1.25rem;
+
+                ion-icon {
+                    font-size: 1.5rem;
+                }
+            }
+        }
     }
 }
 
 @media only screen and (min-width: 768px) {
     #dashboard {
         padding: 2rem 1rem 0 7rem;
+
+        .create-btn {
+            justify-content: flex-start;
+        }
     }
 }

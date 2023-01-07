@@ -1,4 +1,4 @@
-@import "../../../assets/global-styles/global-styles";
+@import "../../assets/global-styles/global-styles";
 
 .create-modal {
     height: 100vh;
@@ -65,6 +65,16 @@
                         padding: 1rem;
                         border: $on-surface solid 0.05rem;
                         border-radius: 0.25rem;
+                    }
+
+                    input[name="start"] ~ label, input[name="end"] ~ label {
+                        background: $surface;
+                        color: $primary;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        left: 1rem;
+                        top: 0;
                     }
 
                     input::placeholder {

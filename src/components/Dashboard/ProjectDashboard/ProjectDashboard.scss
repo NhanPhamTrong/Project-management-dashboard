@@ -78,7 +78,7 @@
                                 background: rgb(30, 30, 30);
                                 position: absolute;
                                 left: 25%;
-                                bottom: 0;
+                                bottom: 0.1rem;
                                 transform: translateX(-50%);
                             }
     
@@ -111,13 +111,13 @@
                             }
                         }
     
-                        .note-item:nth-child(3) {
+                        .note-item:nth-child(2) {
                             div {
                                 background: $primary;
                             }
                         }
     
-                        .note-item:nth-child(5) {
+                        .note-item:nth-child(3) {
                             div {
                                 background: rgb(160, 160, 160);
                             }

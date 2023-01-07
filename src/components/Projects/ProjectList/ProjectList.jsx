@@ -1,17 +1,34 @@
 import "./ProjectList.scss"
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
 
 const ProjectListItem = (props) => {
+    const ref = useRef()
+    const [isOpen, setIsOpen] = useState(false)
+
+    useEffect(() => {
+        const HandleClickOutside = (e) => {
+            if (isOpen && ref.current && !ref.current.contains(e.target)) {
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", HandleClickOutside)
+        return (() => {
+            document.removeEventListener("mousedown", HandleClickOutside)
+        })
+    })
+
     return (
         <li>
-            <button className="project-name" type="button" onClick={() => props.ClickProject(props.item.id)}>
-                {props.item.project.name}
+            <button className="project-name" type="button" onClick={() => props.OpenProjectDetail(props.item.id)}>
+                {props.item.project.title}
             </button>
-            <div className="project-menu">
-                <button className="project-menu-toggler" type="button" onClick={() => props.ClickMenu(props.item.id)}>
+            <div className="project-menu" ref={ref}>
+                <button className="project-menu-toggler" type="button" onClick={() => setIsOpen(!isOpen)}>
                     <ion-icon name="ellipsis-horizontal"></ion-icon>
                 </button>
-                <div className={"project-options " + (props.item.isActive ? "active" : "")}>
+                <div className={"project-options " + (isOpen ? "active" : "")}>
                     <button type="button" onClick={() => props.DeleteProject(props.item.id)}>Delete</button>
                     {props.item.isOpened ? (
                         <button type="button" onClick={() => props.CloseProject(props.item.id)}>Close project</button>
@@ -25,6 +42,26 @@ const ProjectListItem = (props) => {
 }
 
 export const ProjectList = (props) => {
+    const ref = useRef()
+    const [isOpen, setIsOpen] = useState(false)
+
+    useEffect(() => {
+        const HandleClickOutside = (e) => {
+            if (isOpen && ref.current && !ref.current.contains(e.target)) {
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", HandleClickOutside)
+        return (() => {
+            document.removeEventListener("mousedown", HandleClickOutside)
+        })
+    })
+
+    const SortProjectList = (e) => {
+        props.SortProjectList(e.target.name)
+    }
+
     return (
         <motion.div className="project-list"
             key="project-list"
@@ -44,16 +81,16 @@ export const ProjectList = (props) => {
                         Close
                     </button>
                 </div>
-                <div className="sort">
-                    <button className="sort-toggler" type="button" onClick={() => props.SetSortOption()}>
+                <div className="sort" ref={ref}>
+                    <button className="sort-toggler" type="button" onClick={() => setIsOpen(!isOpen)}>
                         Sort
                         <ion-icon name="caret-down"></ion-icon>
                     </button>
-                    <div className={"sort-options " + (props.isActiveSortOption ? "active" : "")}>
-                        <button type="button" onClick={() => props.SortNewest()}>Newest</button>
-                        <button type="button" onClick={() => props.SortOldest()}>Oldest</button>
-                        <button type="button" onClick={() => props.SortDeadline()}>Deadline</button>
-                        <button type="button" onClick={() => props.SortAlphabet()}>Alphabet</button>
+                    <div className={"sort-options " + (isOpen ? "active" : "")}>
+                        <button type="button" onClick={SortProjectList} name="newest">Newest</button>
+                        <button type="button" onClick={SortProjectList} name="oldest">Oldest</button>
+                        <button type="button" onClick={SortProjectList} name="deadline">Deadline</button>
+                        <button type="button" onClick={SortProjectList} name="alphabet">Alphabet</button>
                     </div>
                 </div>
             </div>
@@ -72,8 +109,7 @@ export const ProjectList = (props) => {
                                 <ProjectListItem
                                     key={index}
                                     item={item}
-                                    ClickProject={(id) => props.ClickProject(id)}
-                                    ClickMenu={(id) => props.ClickMenu(id)}
+                                    OpenProjectDetail={(id) => props.OpenProjectDetail(id)}
                                     DeleteProject={(id) => props.DeleteProject(id)}
                                     CloseProject={(id) => props.CloseProject(id)}
                                     OpenProject={(id) => props.OpenProject(id)} />
@@ -96,8 +132,7 @@ export const ProjectList = (props) => {
                                 <ProjectListItem
                                     key={index}
                                     item={item}
-                                    ClickProject={(id) => props.ClickProject(id)}
-                                    ClickMenu={(id) => props.ClickMenu(id)}
+                                    OpenProjectDetail={(id) => props.OpenProjectDetail(id)}
                                     DeleteProject={(id) => props.DeleteProject(id)}
                                     CloseProject={(id) => props.CloseProject(id)}
                                     OpenProject={(id) => props.OpenProject(id)} />

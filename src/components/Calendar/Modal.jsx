@@ -56,18 +56,10 @@ const Form = (props) => {
 }
 
 export const Modal = (props) => {
-    const AddEvent = (newEvent) => {
-        props.AddEvent(newEvent)
-    }
-
-    const SubmitUpdate = (newValue) => {
-        props.SubmitUpdate(newValue)
-    }
-
     const ModalContent = (modalProps) => {
         if (modalProps.type === "input") {
             return (
-                <Form type="input" onSubmit={AddEvent} />
+                <Form type="input" onSubmit={(newEvent) => props.AddEvent(newEvent)} />
             )
         }
         else if (modalProps.type === "view") {
@@ -87,7 +79,7 @@ export const Modal = (props) => {
         }
         else if (modalProps.type === "update") {
             return (
-                <Form update={props.item} type="update" onSubmit={SubmitUpdate} />
+                <Form update={props.item} type="update" onSubmit={(newValue) => props.SubmitUpdate(newValue)} />
             )
         }
         else {
@@ -104,15 +96,11 @@ export const Modal = (props) => {
                 </motion.div>
             )
         }
-    }    
-
-    const CloseModal = () => {
-        props.CloseModal()
     }
 
     return (        
         <div className={"modal" + (props.isActiveModal ? " active" : "")}>
-            <div className="modal-background" onClick={CloseModal}></div>
+            <div className="modal-background" onClick={() => props.CloseModal()}></div>
             <div className="modal-content">
                 <AnimatePresence>
                     <ModalContent type={props.type} />

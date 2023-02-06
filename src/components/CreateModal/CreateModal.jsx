@@ -1,6 +1,6 @@
 import "./CreateModal.scss"
 import { useState } from "react"
-import { WithContext as ReactTags } from 'react-tag-input'
+// import { WithContext as ReactTags } from 'react-tag-input'
 
 let projectId = 0
 
@@ -8,12 +8,12 @@ const CreateProjectId = () => {
     return String(projectId++)
 }
   
-const KeyCodes = {
-    comma: 188,
-    enter: 13
-}
+// const KeyCodes = {
+//     comma: 188,
+//     enter: 13
+// }
 
-const delimiters = [KeyCodes.comma, KeyCodes.enter]
+// const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 const CreateModalForm = (props) => {
     const [input, setInput] = useState({
@@ -116,14 +116,14 @@ const CreateModalForm = (props) => {
         }
     }
 
-    const handleDeleteMember = i => {
-        let newMemberList = input.member.filter((member, index) => index !== i)
-        setInput({ ...input, member: newMemberList })
-    }
+    // const handleDeleteMember = i => {
+    //     let newMemberList = input.member.filter((member, index) => index !== i)
+    //     setInput({ ...input, member: newMemberList })
+    // }
   
-    const handleAdditionMember = newMember => {
-        setInput({ ...input, member: [...input.member, newMember] })
-    }
+    // const handleAdditionMember = newMember => {
+    //     setInput({ ...input, member: [...input.member, newMember] })
+    // }
 
     return (
         <form className="create-modal-form" onSubmit={HandleSubmit}>
@@ -167,7 +167,7 @@ const CreateModalForm = (props) => {
             <section>
                 <h1>Member</h1>
                 <div className="w-100">
-                    <ReactTags
+                    {/* <ReactTags
                         tags={input.member}
                         delimiters={delimiters}
                         allowDragDrop={false}
@@ -176,7 +176,7 @@ const CreateModalForm = (props) => {
                         inputFieldPosition="bottom"
                         placeholder="Member"
                         autocomplete
-                    />
+                    /> */}
                 </div>
             </section>
             <section>

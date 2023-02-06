@@ -9,7 +9,6 @@ import { useState } from "react"
 export const App = () => {
     const [projectList, setProjectList] = useState([])    
     const [eventList, setEventList] = useState([])
-    console.log(eventList)
     const [isCreated, setIsCreated] = useState(false)
 
     // Navbar
@@ -27,6 +26,7 @@ export const App = () => {
     // Dashboard
     const [isDetailed, setIsDetailed] = useState(false)
     const [projectIndex, setProjectIndex] = useState(0)
+    const [getProjectDetail, setGetProjectDetail] = useState([false, 0])
 
     const GetProjectIndex = (id) => {
         setProjectIndex(projectList.indexOf(projectList.filter(project => project.id === id)[0]))
@@ -34,6 +34,20 @@ export const App = () => {
     }
 
     const GoToGeneralDashboard = () => {
+        setIsDetailed(false)
+    }
+
+    const GoToProjectDetail = (id) => {
+        document.querySelectorAll("nav li button").forEach(item => {
+            if (item.getAttribute("name") === "projects") {
+                item.classList.add("active")
+            }
+            else {
+                item.classList.remove("active")
+            }
+        })
+        OpenSection("projects")
+        setGetProjectDetail([true, id])
         setIsDetailed(false)
     }
 
@@ -238,9 +252,12 @@ export const App = () => {
                     projectIndex={projectIndex}
                     GetProjectIndex={GetProjectIndex}
                     GoToGeneralDashboard={GoToGeneralDashboard}
+                    GoToProjectDetail={GoToProjectDetail}
                     OpenCreateProjectModal={() => setIsCreated(true)} />
 
                 <Projects
+                    getProjectDetail={getProjectDetail}
+
                     projectList={projectList}
                     GoToProjectDashboard={GoToProjectDashboard}
                     OpenCreateProjectModal={() => setIsCreated(true)}

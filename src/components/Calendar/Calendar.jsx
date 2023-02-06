@@ -39,7 +39,6 @@ export const Calendar = (props) => {
     }
 
     const handleDateSelect = (selectInfo) => {
-        console.log(selectInfo)
         setDateClickInfo(selectInfo)
         setIsActiveModal(true)
         setType("input")

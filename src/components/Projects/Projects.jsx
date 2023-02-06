@@ -1,7 +1,7 @@
 import "./Projects.scss"
 import { ProjectList } from "./ProjectList/ProjectList"
 import { ProjectDetail } from "./ProjectDetail/ProjectDetail"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AnimatePresence } from "framer-motion"
 
 const variants = {
@@ -14,8 +14,16 @@ const variants = {
 export const Projects = (props) => {
     const [isOpenedList, setIsOpenedList] = useState(true)
 
+    console.log(props.getProjectDetail)
     const [isDetail, setIsDetail] = useState(false)
     const [shownDetail, setShownDetail] = useState()
+
+    useEffect(() => {
+        if (props.getProjectDetail[0]) {
+            setShownDetail(props.projectList.find(item => item.id === props.getProjectDetail[1]))
+            setIsDetail(true)
+        }
+    }, [props.getProjectDetail, props.projectList])
 
     const OpenProjectDetail = (id) => {
         setShownDetail(props.projectList.find(item => item.id === id))
@@ -25,10 +33,6 @@ export const Projects = (props) => {
     const ReturnToProjectList = () => {
         setShownDetail()
         setIsDetail(false)
-    }
-
-    const GoToProjectDashboard = (id) => {
-        props.GoToProjectDashboard(id)
     }
 
     return (
@@ -54,7 +58,7 @@ export const Projects = (props) => {
                         variants={variants}
                         data={shownDetail} // Data shown in ProjectDetail
                         ReturnToProjectList={ReturnToProjectList}
-                        GoToProjectDashboard={GoToProjectDashboard}
+                        GoToProjectDashboard={id => props.GoToProjectDashboard(id)}
                         // Task CRUD
                         CreateTask={(projectId, value) => props.CreateTask(projectId, value)}
                         ClickTaskMenuToggler={(projectId, taskId) => props.ClickTaskMenuToggler(projectId, taskId)}

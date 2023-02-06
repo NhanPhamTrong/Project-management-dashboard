@@ -224,6 +224,15 @@ export const ProjectDashboard = (props) => {
             // Table
             // Column: Employee, Task, Deadline, Workload
         <div className="project-dashboard">
+            <div className="header">
+                <h1>{props.data.project.title}</h1>
+                <button type="button" onClick={() => props.GoToProjectDetail(props.data.id)}>
+                    Project details
+                    <span>
+                        <ion-icon name="arrow-forward"></ion-icon>
+                    </span>
+                </button>
+            </div>
             <ProjectBudget budget={props.data.budget} />
             <OverdueTasks distinguishTask={distinguishTask} />
             <Workload />

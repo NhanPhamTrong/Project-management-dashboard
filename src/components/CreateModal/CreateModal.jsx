@@ -1,11 +1,19 @@
-import { useState } from "react"
 import "./CreateModal.scss"
+import { useState } from "react"
+import { WithContext as ReactTags } from 'react-tag-input'
 
 let projectId = 0
 
 const CreateProjectId = () => {
     return String(projectId++)
 }
+  
+const KeyCodes = {
+    comma: 188,
+    enter: 13
+}
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 const CreateModalForm = (props) => {
     const [input, setInput] = useState({
@@ -22,7 +30,7 @@ const CreateModalForm = (props) => {
             year: "",
             dayForm: ""
         },
-        member: "",
+        member: [],
         total: "",
         planned: ""
     })
@@ -71,7 +79,7 @@ const CreateModalForm = (props) => {
                     start: input.start,
                     end: input.end
                 },
-                member: "",
+                member: [],
                 budget: {
                     total: input.total,
                     planned: input.planned,
@@ -94,7 +102,7 @@ const CreateModalForm = (props) => {
                     year: "",
                     dayForm: ""
                 },
-                member: "",
+                member: [],
                 total: "",
                 planned: ""
             })
@@ -106,6 +114,15 @@ const CreateModalForm = (props) => {
 
             setIsInappropriateDate(false)
         }
+    }
+
+    const handleDeleteMember = i => {
+        let newMemberList = input.member.filter((member, index) => index !== i)
+        setInput({ ...input, member: newMemberList })
+    }
+  
+    const handleAdditionMember = newMember => {
+        setInput({ ...input, member: [...input.member, newMember] })
     }
 
     return (
@@ -150,14 +167,16 @@ const CreateModalForm = (props) => {
             <section>
                 <h1>Member</h1>
                 <div className="w-100">
-                    <input
-                        id="member"
-                        type="number"
-                        value={input.member}
-                        name="member"
-                        onChange={HandleChange}
-                        required />
-                    <label htmlFor="total">Member</label>
+                    <ReactTags
+                        tags={input.member}
+                        delimiters={delimiters}
+                        allowDragDrop={false}
+                        handleDelete={handleDeleteMember}
+                        handleAddition={handleAdditionMember}
+                        inputFieldPosition="bottom"
+                        placeholder="Member"
+                        autocomplete
+                    />
                 </div>
             </section>
             <section>

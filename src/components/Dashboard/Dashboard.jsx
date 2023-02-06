@@ -17,15 +17,15 @@ export const Dashboard = (props) => {
             </div>
             <hr />
             
-            <div className="position">
+            <div className="position" style={{ display: (props.isDetailed ? "flex" : "none") }}>
                 <button type="button" onClick={() => props.GoToGeneralDashboard()}>Dashboard</button>
-                <span style={{ display: (props.isDetailed ? "flex" : "none") }}>
+                <span>
                     <ion-icon name="arrow-forward"></ion-icon>
                 </span>
                 <p>{props.isDetailed ? props.projectList[props.projectIndex].project.title : ""}</p>
             </div>
             {props.isDetailed ? (
-                <ProjectDashboard data={props.projectList[props.projectIndex]} />
+                <ProjectDashboard data={props.projectList[props.projectIndex]} GoToProjectDetail={id => props.GoToProjectDetail(id)} />
             ) : (
                 <GeneralDashboard data={props.projectList} GetProjectIndex={GetProjectIndex} />
             )}

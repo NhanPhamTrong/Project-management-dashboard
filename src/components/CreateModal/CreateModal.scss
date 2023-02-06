@@ -59,6 +59,35 @@
                         transform: translateY(-50%);
                         transition: 0.4s;
                     }
+
+                    .react-tags-wrapper {  
+                        display: flex;
+                        flex-direction: column;
+                        
+                        .ReactTags__selected {
+                            order: 2;
+
+                            .tag-wrapper {
+                                border: black solid 0.05rem;
+                                padding: 0.25rem 0 0.25rem 0.25rem;
+                    
+                                button {
+                                    margin-left: 0.5rem;
+                                    padding: 0.25rem;
+                                    background: $primary;
+                                    color: $on-primary;
+                                }
+                            }
+                        }
+
+                        .ReactTags__tagInput {
+                            order: 1;
+                            
+                            input::placeholder {
+                                color: $on-surface;
+                            }
+                        }
+                    }
     
                     input {
                         width: 100%;
